@@ -137,6 +137,7 @@ Rectangle {
                 anchors.leftMargin: 5
                 text: qsTr("离线登录")
                 color: "white"
+                font.family: "Microsoft YaHei"
                 font.pixelSize: 14
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -169,6 +170,7 @@ Rectangle {
                 anchors.rightMargin: 5
                 text: qsTr("正版登录")
                 color: "#21be2b"
+                font.family: "Microsoft YaHei"
                 font.pixelSize: 14
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -215,6 +217,7 @@ Rectangle {
             width: 130
             height: 30
             model: Interface.getGameList()
+            font.family: "Microsoft YaHei"
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.rightMargin: 30
@@ -402,6 +405,7 @@ Rectangle {
                 //game.qmlGetGameList();
             }*/
             editable: true
+            font.family: "Microsoft YaHei"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: skinAvatar.bottom
             anchors.topMargin: 40
@@ -636,6 +640,7 @@ Rectangle {
                 anchors.fill: parent
                 text: qsTr("  启动游戏！")
                 color: "#21be2b"
+                font.family: "Microsoft YaHei"
                 font.pixelSize: 24
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter

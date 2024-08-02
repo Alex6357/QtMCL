@@ -380,6 +380,7 @@ Rectangle {
             anchors.fill: parent
             text: qsTr("启动")
             color: "#00b057"
+            font.family: "Microsoft YaHei"
             font.pixelSize: 14
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -446,6 +447,7 @@ Rectangle {
             anchors.fill: parent
             text: qsTr("游戏设置")
             color: "white"
+            font.family: "Microsoft YaHei"
             font.pixelSize: 14
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -511,6 +513,7 @@ Rectangle {
             anchors.fill: parent
             text: qsTr("MOD 管理")
             color: "white"
+            font.family: "Microsoft YaHei"
             font.pixelSize: 14
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -577,6 +580,7 @@ Rectangle {
             anchors.fill: parent
             text: qsTr("自动安装")
             color: "white"
+            font.family: "Microsoft YaHei"
             font.pixelSize: 14
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter

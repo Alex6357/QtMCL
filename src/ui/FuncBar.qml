@@ -147,6 +147,7 @@ Rectangle {
                     anchors.fill: parent
                     text: qsTr("启动游戏")
                     color: "#000000"
+                    font.family: "Microsoft YaHei"
                     font.pixelSize: 16
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -208,6 +209,7 @@ Rectangle {
                     anchors.fill: parent
                     text: qsTr("下载游戏")
                     color: "#000000"
+                    font.family: "Microsoft YaHei"
                     font.pixelSize: 16
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -269,6 +271,7 @@ Rectangle {
                     anchors.fill: parent
                     text: qsTr("全局设置")
                     color: "#000000"
+                    font.family: "Microsoft YaHei"
                     font.pixelSize: 16
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -330,6 +333,7 @@ Rectangle {
                     anchors.fill: parent
                     text: qsTr("更多信息")
                     color: "#000000"
+                    font.family: "Microsoft YaHei"
                     font.pixelSize: 16
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter

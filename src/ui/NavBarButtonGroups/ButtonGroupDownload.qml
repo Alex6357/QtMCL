@@ -338,6 +338,7 @@ Rectangle {
             anchors.fill: parent
             text: qsTr("Minecraft")
             color: "#00b057"
+            font.family: "Microsoft YaHei"
             font.pixelSize: 14
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -404,6 +405,7 @@ Rectangle {
             anchors.fill: parent
             text: qsTr("Mods")
             color: "white"
+            font.family: "Microsoft YaHei"
             font.pixelSize: 14
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -471,6 +473,7 @@ Rectangle {
             anchors.fill: parent
             text: qsTr("整合包")
             color: "white"
+            font.family: "Microsoft YaHei"
             font.pixelSize: 14
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter

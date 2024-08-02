@@ -91,6 +91,7 @@ Rectangle {
             color: "white"
             text: "\u2715"
             anchors.verticalCenter: parent.verticalCenter
+            font.family: "Microsoft YaHei"
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -130,6 +131,7 @@ Rectangle {
             color: "white"
             text: "\u2500"
             anchors.verticalCenter: parent.verticalCenter
+            font.family: "Microsoft YaHei"
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
