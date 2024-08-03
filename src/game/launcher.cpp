@@ -277,9 +277,9 @@ const qint64 QuickMCL::game::Launcher::launch(const QString& name, const QString
     gameProcess.setProgram(getCommand(name));
     gameProcess.setArguments(getArguments(name, playerName));
     gameProcess.setWorkingDirectory(getWorkingDir(name));
-    qDebug() << getCommand(name);
-    qDebug() << getArguments(name, playerName);
-    qDebug() << getWorkingDir(name);
+    qDebug() << "[QuickMCL::game::Launcher] 启动命令：" << getCommand(name);
+    qDebug() << "[QuickMCL::game::Launcher] 启动参数：" << getArguments(name, playerName);
+    qDebug() << "[QuickMCL::game::Launcher] 启动目录：" << getWorkingDir(name);
     qint64* pid = nullptr;
     gameProcess.startDetached(pid);
     if (pid != nullptr){

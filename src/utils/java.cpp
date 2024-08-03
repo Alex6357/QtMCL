@@ -82,7 +82,6 @@ void QuickMCL::utils::Java::scanJava(){
                     const QFileInfoList javaList = QDir(drive.absoluteFilePath() + programFiles + javaDir).entryInfoList(QStringList({"*jdk*", "*jre*", "*zulu*"}), QDir::Filter::NoDotAndDotDot | QDir::Filter::Dirs);
                     if (!javaList.isEmpty()){
                         for (const QFileInfo& dir : javaList){
-                            // qDebug() << dir.absoluteFilePath();
                             registerJavaByPath(dir.absoluteFilePath() + '/' + "bin/java.exe");
                         }
                     }
@@ -94,7 +93,6 @@ void QuickMCL::utils::Java::scanJava(){
             const QFileInfoList javaList = QDir(localProgramDir + javaDir).entryInfoList(QStringList({"*jdk*", "*jre*", "*zulu*"}), QDir::Filter::NoDotAndDotDot | QDir::Filter::Dirs);
             if (!javaList.isEmpty()){
                 for (const QFileInfo& dir : javaList){
-                    // qDebug() << dir.absoluteFilePath();
                     registerJavaByPath(dir.absoluteFilePath() + '/' + "bin/java.exe");
                 }
             }
@@ -176,14 +174,13 @@ void QuickMCL::utils::Java::registerJavaByPath(const QString& path){
             name.append(" (32-bit)");
         }
         javaList->append(new Java(type, arch, path, version.toInt(), detailVersion, name));
-        qDebug() << "注册 Java:";
-        qDebug() << "type:           " << type;
-        qDebug() << "arch:           " << arch;
-        qDebug() << "path:           " << path;
-        qDebug() << "version:        " << version.toInt();
-        qDebug() << "detail version: " << detailVersion;
-        qDebug() << "name:           " << name;
-        qDebug();
+        qDebug() << "[QuickMCL::utils::Java] 注册 Java:";
+        qDebug() << "[QuickMCL::utils::Java] type:           " << type;
+        qDebug() << "[QuickMCL::utils::Java] arch:           " << arch;
+        qDebug() << "[QuickMCL::utils::Java] path:           " << path;
+        qDebug() << "[QuickMCL::utils::Java] version:        " << version.toInt();
+        qDebug() << "[QuickMCL::utils::Java] detail version: " << detailVersion;
+        qDebug() << "[QuickMCL::utils::Java] name:           " << name;
     }
 }
 

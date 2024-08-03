@@ -82,7 +82,8 @@ const QStringList QuickMCL::config::Config::getUserListCopy(){
 // 将用户添加到用户列表
 void QuickMCL::config::Config::addToUserList(const QString user){
     QuickMCL::config::userList->append(user);
-    qDebug() << *QuickMCL::config::userList;
+    qDebug() << "[QuickMCL::config::Config] 添加用户";
+    qDebug() << "[QuickMCL::config::Config] 当前用户列表：" << *QuickMCL::config::userList;
 }
 
 // 获取用户列表指针
