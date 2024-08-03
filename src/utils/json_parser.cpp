@@ -66,5 +66,18 @@ QJsonObject QuickMCL::utils::JsonPraser::readObjectFromFile(const QString& fileP
     return readJsonFromFile(filePath).object();
 }
 
+// 向文件写入 jsonObject
+const bool QuickMCL::utils::JsonPraser::writeObjectToFile(const QJsonObject& object, const QString& file){
+    qDebug() << "[QuickMCL::utils::JsonParser] 正在写入 json 文件：";
+    qDebug() << "[QuickMCL::utils::JsonParser] file: " << file;
+    qDebug() << "[QuickMCL::utils::JsonParser] object: " << object;
+    QFile outFile(file);
+    outFile.open(QFile::Truncate | QFile::WriteOnly);
+    outFile.write(QJsonDocument(object).toJson());
+    outFile.close();
+    // **需要错误处理
+    return true;
+}
+
 // QJsonObject readObject() const;
 // void setFile(QString& fileName);

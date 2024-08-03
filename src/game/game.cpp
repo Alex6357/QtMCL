@@ -164,9 +164,68 @@ void QuickMCL::game::Game::readGamesFromArray(const QJsonArray& array){
     }
 }
 
-// void readConfigFromObject(const QJsonObject& object){
+// 从 jsonObject 读取游戏配置
+void QuickMCL::game::Game::readConfigFromObject(const QJsonObject& object){
+    QString javaPath = object.value("java").toString();
+    for (const utils::Java* const java : *utils::Java::getJavaListPtr()){
+        if (java->getPath() == javaPath){
+            setJava(java);
+            break;
+        }
+    }
+    setSeperate(object.value("isSeperate").toBool());
+    setMinimumMemory(object.value("minimumMemory").toInt());
+    setMaximumMemory(object.value("maximumMemory").toInt());
+    QStringList jvmParameters;
+    QJsonArray jvmParametersArray = object.value("jvmParameters").toArray();
+    for (const QJsonValue& jvmParameter : jvmParametersArray){
+        jvmParameters.append(jvmParameter.toString());
+    }
+    setJvmParameters(jvmParameters);
+    QStringList features;
+    QJsonArray featuresArray = object.value("features").toArray();
+    for (const QJsonValue& feature : featuresArray){
+        features.append(feature.toString());
+    }
+    setFeatures(features);
+    setResolutionWidth(object.value("resolutionWidth").toInt());
+    setResolutionHeight(object.value("resolutionHeight").toInt());
+    setServer(object.value("server").toString());
+    setPort(object.value("port").toInt());
+    setQuickPlayMultiPlayer(object.value("quickPlayMultiPlayer").toString());
+    setQuickPlaySinglePlayer(object.value("quickPlaySinglePlayer").toString());
+    setQuickPlayRealms(object.value("quickPlayRealms").toInt());
+}
 
-// }
+// 获取配置文件的 jsonObject
+const QJsonObject QuickMCL::game::Game::getConfigObject() const {
+    QJsonObject configObject;
+    configObject.insert("name", this->name);
+    if (this->java != nullptr){
+        configObject.insert("java", this->java->getPath());
+    }
+    configObject.insert("isSeperate", this->seperate);
+    configObject.insert("minimumMemory", this->minimumMemory);
+    configObject.insert("maximumMemory", this->maximumMemory);
+    QJsonArray jvmParameters;
+    for (const QString& jvmParameter : this->jvmParameters){
+        jvmParameters.append(jvmParameter);
+    }
+    configObject.insert("jvmParameters", jvmParameters);
+    QJsonArray features;
+    for (const QString& feature : this->features){
+        features.append(feature);
+    }
+    configObject.insert("features", features);
+    configObject.insert("resolutionWidth", this->resolutionWidth);
+    configObject.insert("resolutionHeight", this->resolutionHeight);
+    configObject.insert("server", this->server);
+    configObject.insert("port", this->port);
+    configObject.insert("quickPlayMultiPlayer", this->quickPlayMultiPlayer);
+    configObject.insert("quickPlaySinglePlayer", this->quickPlaySinglePlayer);
+    configObject.insert("quickPlayRealms", this->quickPlayRealms);
+    return configObject;
+}
 
 // 获取配置 json 路径
 const QString QuickMCL::game::Game::getConfigJsonFile() const {
@@ -229,4 +288,9 @@ const int QuickMCL::game::Game::getJavaVersion() const {
 // 获取 gameList 指针
 QuickMCL::game::gameMap* const QuickMCL::game::Game::getGameListPtr(){
     return gameList;
+}
+
+// 获取 globalGameConfig 指针
+QuickMCL::game::Game* const QuickMCL::game::Game::getGlobalGameConfigPtr(){
+    return globalGameConfig;
 }

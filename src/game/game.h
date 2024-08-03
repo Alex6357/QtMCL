@@ -39,6 +39,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QJsonObject>
 #include <QMap>
 #include <QGlobalStatic>
 #include <QJsonArray>
@@ -190,7 +191,11 @@ public:
     void setQuickPlayRealms(int realms);
 
 
+    // 从 jsonObject 读取游戏配置
     void readConfigFromObject(const QJsonObject& object);
+    // 获取配置文件的 jsonObject
+    const QJsonObject getConfigObject() const;
+
     // 获取配置 json 路径
     const QString getConfigJsonFile() const;
 
@@ -215,6 +220,8 @@ public:
     static void readGamesFromArray(const QJsonArray& array);
     // 获取 gameList 指针
     static QMap<QString, Game*>* const getGameListPtr();
+    // 获取 globalConfig 指针
+    static Game* const getGlobalGameConfigPtr();
 };
 typedef QMap<QString, Game*> gameMap;
 }

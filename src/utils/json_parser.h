@@ -68,6 +68,8 @@ public:
     static QJsonDocument readJsonFromFile(const QString& filePath);
     // 从文件读取 jsonObject
     static QJsonObject readObjectFromFile(const QString& filePath);
+    // 向文件写入 jsonObject
+    static const bool writeObjectToFile(const QJsonObject& object, const QString& file);
 };
 }
 

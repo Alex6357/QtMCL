@@ -171,6 +171,8 @@ public:
     void readConfig();
     // 从配置文件读取配置
     void readConfigFromFile(const QString& file);
+    // 向配置文件写入配置
+    void writeConfigToFile();
     // 从 json array 读取用户列表
     void readUserListFromArray(const QJsonArray& array);
 

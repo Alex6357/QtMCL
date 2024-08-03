@@ -99,3 +99,10 @@ const QString QuickMCL::utils::getSystemName(){
 const QString QuickMCL::utils::getSystemVersion(){
     return QSysInfo::productVersion();
 }
+
+// 建立文件
+const bool QuickMCL::utils::makeFile(const QString& file){
+    const bool isSucceed = QFile(file).open(QFile::WriteOnly);
+    QFile(file).close();
+    return isSucceed;
+}

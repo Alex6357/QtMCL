@@ -51,6 +51,9 @@ const enum QuickMCL::config::arch getArch();
 const QString getSystemName();
 // 获取系统版本号
 const QString getSystemVersion();
+
+// 建立文件
+const bool makeFile(const QString& file);
 }
 
 #endif // UTILS_H

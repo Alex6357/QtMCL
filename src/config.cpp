@@ -149,14 +149,46 @@ void QuickMCL::config::Config::readConfig(){
             return;
         }
     }
-    //** 没有配置文件处理
+    // **先没有考虑其他情况，直接进行
+    // 判断并新建配置文件夹和文件
+    if(!QFileInfo::exists(getGlobalConfigDir())){
+        QDir().mkdir(getGlobalConfigDir());
+    } else if (!QFileInfo(getGlobalConfigDir()).isDir()){
+        // **err
+        return;
+    } else {
+        // **不能读写
+    }
+    QuickMCL::utils::makeFile(getGlobalConfigDir() + configFile);
 }
 
 // 从配置文件读取配置
 void QuickMCL::config::Config::readConfigFromFile(const QString& file){
-    const QJsonObject configObject = QuickMCL::utils::JsonPraser::readObjectFromFile(file);
-    QuickMCL::game::Game::readGamesFromArray(configObject.value("games").toArray());
+    const QJsonObject configObject = utils::JsonPraser::readObjectFromFile(file);
+    // QuickMCL::game::Game::readGamesFromArray(configObject.value("games").toArray());
+    setGameDirPlace((config::gameDirPlace)configObject.value("gameDirPlace").toInt());
+    setConfigDir(configObject.value("configDir").toString());
+    setGameDir(configObject.value("gameDir").toString());
+    setTempDir(configObject.value("tempDir").toString());
+    game::Game::getGlobalGameConfigPtr()->readConfigFromObject(configObject.value("globalGameConfig").toObject());
     readUserListFromArray(configObject.value("users").toArray());
+}
+
+// 向配置文件写入配置
+void QuickMCL::config::Config::writeConfigToFile(){
+    QJsonObject configObject;
+    // **需要做多系统适配
+    configObject.insert("gameDirPlace", this->gameDirPlace);
+    configObject.insert("configDir", this->configDir);
+    configObject.insert("gameDir", this->gameDir);
+    configObject.insert("tempDir", this->tempDir);
+    configObject.insert("globalGameConfig", QuickMCL::game::Game::getGlobalGameConfigPtr()->getConfigObject());
+    QJsonArray users;
+    for (const QString& user : *userList){
+        users.append(user);
+    }
+    configObject.insert("users", users);
+    QuickMCL::utils::JsonPraser::writeObjectToFile(configObject, getActuralConfigDir() + configFile);
 }
 
 // 从 json array 读取用户列表
@@ -200,7 +232,7 @@ const QString QuickMCL::config::Config::getGlobalGameDir() const {
 // 获取实际的配置文件目录
 const QString QuickMCL::config::Config::getActuralConfigDir() const {
     if (this->configDirPlace == QuickMCL::config::configDirPlace::localConfigDir){
-        return QDir::toNativeSeparators(QDir(getConfigDirName()).absolutePath());
+        return QDir(getConfigDirName()).absolutePath() + '/';
     } else {
         return getGlobalConfigDir();
     }
