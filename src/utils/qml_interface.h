@@ -12,10 +12,14 @@ class QmlInterface : public QObject
 {
     Q_OBJECT
 public:
+    // 默认构造函数
     explicit QmlInterface(QObject *parent = nullptr);
 
+    // 启动游戏
     Q_INVOKABLE static const qint64 launchGame(const QString& name, const QString& playerName, const int type = 0);
+    // 获取 userList
     Q_INVOKABLE static const QStringList getUserList();
+    // 获取 gameList
     Q_INVOKABLE static const QStringList getGameList();
 signals:
 };

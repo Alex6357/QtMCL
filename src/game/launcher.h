@@ -47,17 +47,26 @@ namespace QuickMCL::game {
 class Launcher
 {
 public:
+    // 获取启动命令（Java 路径）
     static const QString getCommand(const QString& name);
+    // 自动获取适合的 java
     static const QString autoGetJava(const QString& name);
+    // 获取启动参数
     static const QStringList getArguments(const QString& name,
                                    const QString& playerName,
                                    const QString& uid = "00000FFFFFFFFFFFFFFFFFFFFFF2F4BA",
                                    const QString& token = "00000FFFFFFFFFFFFFFFFFFFFFF2F4BA");
+    // 获取运行目录
     static const QString getWorkingDir(const QString& name);
+    // 从游戏配置文件读取 jvm 参数
     static const QStringList getJvmParameters(const Game* const game);
+    // 从 json 文件读取 -cp 库
     static const QString getClassPath(const Game* const game);
+    // 从 json 文件中获取 MainClass
     static const QString getMainClass(const Game* const game);
+    // 从 json 文件中获取游戏参数
     static const QStringList getGameParameters(const Game* const game);
+    // 启动游戏
     static const qint64 launch(const QString& name, const QString& playerName, const int type = 0);
 };
 }

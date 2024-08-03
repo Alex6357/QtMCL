@@ -105,7 +105,7 @@ const QStringList QuickMCL::game::Launcher::getArguments(const QString& name,
     return arguments;
 }
 
-// 设置运行目录
+// 获取运行目录
 const QString QuickMCL::game::Launcher::getWorkingDir(const QString& name){
     return Game::getGameListPtr()->value(name)->getGameDirectory();
 }

@@ -47,6 +47,7 @@ Q_GLOBAL_STATIC(JavaList, javaList);
 Q_GLOBAL_STATIC(const QStringList, javaDirs, {"Java/", "Eclipse Adoptium/", "Amazon Corretto/", "Microsoft/", "Zulu/", "OpenLogic/"});
 }
 
+// 默认构造函数
 QuickMCL::utils::Java::Java(const enum QuickMCL::utils::javaType type,
                             const enum QuickMCL::config::arch arch,
                             const QString& path,

@@ -88,9 +88,9 @@ class Config : public QObject
 {
     Q_OBJECT
 private:
-    // 配置文件位置变量
+    // 配置文件位置类型
     enum configDirPlace configDirPlace = configDirPlace::localConfigDir;
-    // 游戏目录位置变量
+    // 游戏目录位置类型
     enum gameDirPlace gameDirPlace = gameDirPlace::localGameDir;
     // 系统架构
     enum arch arch;
@@ -107,54 +107,88 @@ private:
     // 临时文件位置
     QString tempDir = QDir::tempPath() + "/" + (QuickMCL::config::tempDir);
 public:
+    // 默认构造函数
     explicit Config(QObject *parent = nullptr);
+    // 默认析构函数
     ~Config();
 
+    // 获取 globalConfig 指针
     static Config* const getGlobalConfigPtr();
+    // 获取用户列表的副本
     static const QStringList getUserListCopy();
+    // 将用户添加到用户列表
     static void addToUserList(const QString user);
+    // 获取用户列表指针
     static QStringList* const getUserListPtr();
 
+    // 获取配置文件位置类型
     const enum configDirPlace getConfigDirPlace() const {return this->configDirPlace;};
+    // 设置配置文件位置类型
     void setConfigDirPlace(const enum configDirPlace configDirPlace);
 
+    // 获取游戏目录位置类型
     const enum gameDirPlace getGameDirPlace() const {return this->gameDirPlace;};
+    // 设置游戏目录位置类型
     void setGameDirPlace(const enum gameDirPlace gameDirPlace);
 
+    // 获取系统架构
     const enum arch getArch() const {return this->arch;};
+    // 设置系统架构
     void setArch(const enum arch arch);
 
+    // 获取系统类型
     const enum system getSystem() const {return this->system;};
+    // 设置系统类型
     void setSystem(const enum system system);
 
+    // 获取系统名称
     const QString getSystemName() const {return this->systemName;};
+    // 设置系统名称
     void setSystemName(const QString systemName);
 
+    // 获取系统版本号
     const QString getSystemVersion() const {return this->systemVersion;};
+    // 设置系统版本号
     void setSystemVersion(const QString systemVersion);
 
+    // 获取配置文件路径
     const QString getConfigDir() const {return this->configDir;};
+    // 设置配置文件路径
     void setConfigDir(const QString configDir);
 
+    // 获取游戏目录路径
     const QString getGameDir() const {return this->gameDir;};
+    // 设置游戏目录路径
     void setGameDir(const QString gameDir);
 
+    // 获取临时文件路径
     const QString getTempDir() const {return this->tempDir;};
+    // 设置临时文件路径
     void setTempDir(const QString tempDir);
 
 
+    // 自动寻找并读取配置文件
     void readConfig();
+    // 从配置文件读取配置
     void readConfigFromFile(const QString& file);
+    // 从 json array 读取用户列表
     void readUserListFromArray(const QJsonArray& array);
 
+    // 获取配置目录名称
     const QString getConfigDirName() const;
+    // 获取全局配置目录
     const QString getGlobalConfigDir() const;
+    // 获取全局游戏目录
     const QString getGlobalGameDir() const;
 
+    // 获取实际的配置文件目录
     const QString getActuralConfigDir() const;
+    // 获取实际的游戏目录
     const QString getActuralGameDir() const;
 
+    // 获取版本 json 文件中架构的写法
     const QString getArchInMinecraft() const;
+    // 获取版本 json 文件中系统名称的写法
     const QString getSystemNameInMinecraft() const;
 };
 }

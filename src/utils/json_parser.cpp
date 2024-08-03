@@ -38,10 +38,12 @@
 #include <QJsonObject>
 #include "json_parser.h"
 
+// 默认构造函数
 QuickMCL::utils::JsonPraser::JsonPraser(const QString& filePath){
     // setFilePath(filePath);
 }
 
+// 从文件读取 QByteArray
 QByteArray QuickMCL::utils::JsonPraser::readFromFile(const QString& filePath){
     QFile file = QFile(filePath);
     file.open(QIODevice::ReadOnly);
@@ -49,13 +51,20 @@ QByteArray QuickMCL::utils::JsonPraser::readFromFile(const QString& filePath){
     file.close();
     return content;
 }
+
 // QByteArray read() const;
+
+// 从文件读取 jsonDocument
 QJsonDocument QuickMCL::utils::JsonPraser::readJsonFromFile(const QString& filePath){
     return QJsonDocument::fromJson(readFromFile(filePath));
 }
+
 // QJsonDocument readJson() const;
+
+// 从文件读取 jsonObject
 QJsonObject QuickMCL::utils::JsonPraser::readObjectFromFile(const QString& filePath){
     return readJsonFromFile(filePath).object();
 }
+
 // QJsonObject readObject() const;
 // void setFile(QString& fileName);

@@ -40,18 +40,22 @@
 #include "../game/game.h"
 #include "../config.h"
 
+// 默认构造函数
 QuickMCL::utils::QmlInterface::QmlInterface(QObject *parent)
     : QObject{parent}
 {}
 
+// 启动游戏
 const qint64 QuickMCL::utils::QmlInterface::launchGame(const QString& name, const QString& playerName, const int type){
     return QuickMCL::game::Launcher::launch(name, playerName, type);
 }
 
+// 获取 userList
 const QStringList QuickMCL::utils::QmlInterface::getUserList(){
     return QuickMCL::config::Config::getUserListCopy();
 }
 
+// 获取 gameList
 const QStringList QuickMCL::utils::QmlInterface::getGameList(){
     return QStringList::fromList(QuickMCL::game::Game::getGameListPtr()->keys());
 }

@@ -46,17 +46,27 @@ namespace QuickMCL::utils {
 class JsonPraser
 {
 private:
+    // json 文件
     QFile file;
 public:
+    // 默认构造函数
     JsonPraser(const QString& filePath);
 
+    // 读取 QByteArray
     QByteArray read() const;
+    // 读取 jsonDocument
     QJsonDocument readJson() const;
+    // 读取 jsonObject
     QJsonObject readObject() const;
+
+    // 设置文件路径
     void setFilePath(const QString& filePath);
 
+    // 从文件读取 QByteArray
     static QByteArray readFromFile(const QString& filePath);
+    // 从文件读取 jsonDocument
     static QJsonDocument readJsonFromFile(const QString& filePath);
+    // 从文件读取 jsonObject
     static QJsonObject readObjectFromFile(const QString& filePath);
 };
 }

@@ -64,19 +64,30 @@ private:
     // java 名称
     const QString name;
 public:
+    // 默认构造函数
     Java(const enum javaType type, const enum QuickMCL::config::arch arch, const QString& path, const int version, const QString& detailVersion, const QString& name);
 
+    // 获取 java 类型
     const enum javaType getType() const {return this->type;};
+    // 获取 java 路径
     const QString getPath() const {return this->path;};
+    // 获取 java 大版本
     const int getVersion() const {return this->version;};
+    // 获取 java 具体版本
     const QString getDetailVersion() const {return this->detailVersion;};
+    // 获取 java 名称
     const QString getName() const {return this->name;};
 
+    // 是否是 jre
     const bool isJre() const;
+    // 是否是 jdk
     const bool isJdk() const;
 
+    // 扫描 java
     static void scanJava();
+    // 以 java.exe 的路径注册 java
     static void registerJavaByPath(const QString& path);
+    // 获取 javaList 指针
     static QList<const Java*>* getJavaListPtr();
 };
 typedef QList<const Java*> JavaList;

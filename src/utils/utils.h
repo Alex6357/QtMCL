@@ -40,11 +40,16 @@
 #include "../config.h"
 
 namespace QuickMCL::utils {
+// 用双引号包裹字符串
 const QString warpInQuotationMarks(const QString& string);
 
+// 获取系统类型
 const enum QuickMCL::config::system getSystemType();
+// 获取系统架构
 const enum QuickMCL::config::arch getArch();
+// 获取系统名称
 const QString getSystemName();
+// 获取系统版本号
 const QString getSystemVersion();
 }
 
