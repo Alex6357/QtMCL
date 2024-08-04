@@ -52,7 +52,22 @@ QByteArray QuickMCL::utils::JsonPraser::readFromFile(const QString& filePath){
     return content;
 }
 
-// QByteArray read() const;
+// 从文件读取 jsonArray
+const QJsonArray QuickMCL::utils::JsonPraser::readArrayFromFile(const QString& file){
+    return readJsonFromFile(file).array();
+}
+
+// 向文件写入 jsonArray
+const bool QuickMCL::utils::JsonPraser::writeArrayToFile(const QJsonArray& array, const QString& file){
+    qDebug() << "[QuickMCL::utils::JsonParser::writeArrayToFile] 正在写入 json 文件：";
+    qDebug() << "[QuickMCL::utils::JsonParser::writeArrayToFile] file: " << file;
+    qDebug() << "[QuickMCL::utils::JsonParser::writeArrayToFile] array: " << array;
+    QFile outFile(file);
+    outFile.open(QFile::Truncate | QFile::WriteOnly);
+    outFile.write(QJsonDocument(array).toJson());
+    outFile.close();
+    return true;
+}
 
 // 从文件读取 jsonDocument
 QJsonDocument QuickMCL::utils::JsonPraser::readJsonFromFile(const QString& filePath){

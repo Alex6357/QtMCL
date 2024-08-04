@@ -51,6 +51,8 @@ static const char* configDir = ".quickmcl/";
 static const char* windowsConfigDir = "QuickMCL/";
 // 配置文件名称
 static const char* configFile = "config.json";
+// 游戏列表文件名称
+static const char* gameListFile = "games.json";
 // 临时目录名称
 static const char* tempDir = "quickmcl/";
 

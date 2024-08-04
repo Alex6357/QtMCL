@@ -222,6 +222,10 @@ public:
     static void scanGame(const QString& path = "");
     // 用路径注册游戏
     static const bool registerGameByPath(const QString& path, const bool isSeperate = true);
+    // 读取全部游戏配置
+    static void readGameConfig();
+    // 写入全部游戏配置
+    static void writeGameConfig();
     // 获取 gameList 指针
     static QMap<QString, Game*>* const getGameListPtr();
     // 获取 globalConfig 指针

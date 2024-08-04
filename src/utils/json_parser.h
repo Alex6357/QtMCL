@@ -64,6 +64,10 @@ public:
 
     // 从文件读取 QByteArray
     static QByteArray readFromFile(const QString& filePath);
+    // 从文件读取 jsonArray
+    static const QJsonArray readArrayFromFile(const QString& file);
+    // 向文件写入 jsonArray
+    static const bool writeArrayToFile(const QJsonArray& array, const QString& file);
     // 从文件读取 jsonDocument
     static QJsonDocument readJsonFromFile(const QString& filePath);
     // 从文件读取 jsonObject

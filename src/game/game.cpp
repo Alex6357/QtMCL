@@ -277,11 +277,24 @@ const int QuickMCL::game::Game::getJavaVersion() const {
 
 // 从 array 读取已知游戏
 void QuickMCL::game::Game::readGamesFromArray(const QJsonArray& array){
-    QJsonArray::ConstIterator iterator = array.constBegin();
-    QJsonArray::ConstIterator end = array.constEnd();
-    for(; iterator != end; iterator++){
-        QString name = iterator->toObject().value("name").toString();
-        gameList()->insert(name, new QuickMCL::game::Game(name));
+    qDebug() << "[QuickMCL::game::Game::readGamesFromArray] 开始读取游戏：";
+    for (const QJsonValue& object : array){
+        const QJsonObject gameObject = object.toObject();
+        qDebug() << "[QuickMCL::game::Game::readGamesFromArray] object: " << object;
+        const QString gameName = gameObject.value("name").toString();
+        bool success;
+        if (gameObject.value("isSeperate").toBool()){
+            success = registerGameByPath(config::Config::getGlobalConfigPtr()->getActuralGameDir() + "versions/" + gameName + '/' + gameName + ".jar");
+        } else {
+            success = registerGameByPath(config::Config::getGlobalConfigPtr()->getActuralGameDir() + gameName + ".jar", false);
+        }
+        if (success){
+            qDebug() << "[QuickMCL::game::Game::readGamesFromArray] 成功注册游戏，开始读取配置";
+            Game* const game = gameList->find(gameName).value();
+            game->readConfigFromObject(gameObject);
+        } else {
+            qDebug() << "[QuickMCL::game::Game::readGamesFromArray] 注册游戏失败，跳过读取配置";
+        }
     }
 }
 
@@ -320,6 +333,8 @@ void QuickMCL::game::Game::scanGame(const QString& path){
             }
         }
     }
+    qDebug() << "[QuickMCL::game::Game::scanGame] 扫描完成，更新配置文件";
+    writeGameConfig();
 }
 
 // 用路径注册游戏
@@ -342,11 +357,27 @@ const bool QuickMCL::game::Game::registerGameByPath(const QString& path, const b
             return true;
         }
         qDebug() << "[QuickMCL::game::Game::registerGameByPath] 注册失败，游戏已存在";
+        return false;
     }
     qDebug() << "[QuickMCL::game::Game::registerGameByPath] 注册失败，路径不合法：";
     qDebug() << "[QuickMCL::game::Game::registerGameByPath] game is file: " << game.isFile();
     qDebug() << "[QuickMCL::game::Game::registerGameByPath] " << game.absolutePath() + '/' + game.completeBaseName() + ".json" << " is file: " << QFileInfo(game.absolutePath() + '/' + game.completeBaseName() + ".json").isFile();
     return false;
+}
+
+// 读取全部游戏配置
+void QuickMCL::game::Game::readGameConfig(){
+    readGamesFromArray(utils::JsonPraser::readArrayFromFile(QuickMCL::config::Config::getGlobalConfigPtr()->getActuralConfigDir() + config::gameListFile));
+}
+
+// 写入全部游戏配置
+void QuickMCL::game::Game::writeGameConfig(){
+    QJsonArray gameConfigArray;
+    gameMap gameList = *getGameListPtr();
+    for (Game* game : gameList){
+        gameConfigArray.append(game->getConfigObject());
+    }
+    utils::JsonPraser::writeArrayToFile(gameConfigArray, QuickMCL::config::Config::getGlobalConfigPtr()->getActuralConfigDir() + config::gameListFile);
 }
 
 // 获取 gameList 指针
