@@ -34,6 +34,7 @@
  */
 
 import QtQuick
+import "QuickMCLComponents"
 import "NavBarButtonGroups"
 
 // 导航栏
@@ -72,83 +73,51 @@ Rectangle {
     }
 
     // 关闭按钮
-    Rectangle {
+    QuickMCLButton {
         id: closeButton
         x: 1222
         width: 30
         height: width
         color: "transparent"
-        radius: 5
+        border.width: 0
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 15
 
-        // 关闭按钮文字
-        Text {
-            id: closeButtonText
-            width: 30
-            height: 30
-            color: "white"
-            text: "\u2715"
-            anchors.verticalCenter: parent.verticalCenter
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 20
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
+        colorAnimation.duration: 0
 
-        // 关闭按钮鼠标区
-        MouseArea {
-            id: closeButtonArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: parent.color.a = 0.17
-            onExited: parent.color.a = 0
-            onPressed: parent.color.a = 0.4
-            onClicked: rootWindow.close()
-        }
+        text.color: "white"
+        text.text: "\u2715"
+        text.font.pixelSize: 20
+
+        mouseArea.onEntered: closeButton.color.a = 0.17
+        mouseArea.onExited: closeButton.color.a = 0
+        mouseArea.onPressed: closeButton.color.a = 0.4
+        mouseArea.onClicked: rootWindow.close()
     }
 
     // 最小化按钮
-    Rectangle {
+    QuickMCLButton {
         id: minimizeButton
         x: 1170
         width: closeButton.width
         height: closeButton.height
         color: "transparent"
-        radius: 5
+        border.width: 0
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: closeButton.left
         anchors.rightMargin: 15
 
-        // 最小化按钮文字
-        Text {
-            id: minimizeButtonText
-            width: 30
-            height: 30
-            color: "white"
-            text: "\u2500"
-            anchors.verticalCenter: parent.verticalCenter
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 20
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
+        colorAnimation.duration: 0
 
-        // 最小化按钮鼠标区
-        MouseArea {
-            id: minimizeButtonArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: parent.color.a = 0.17
-            onExited: parent.color.a = 0
-            onPressed: parent.color.a = 0.4
-            onClicked: rootWindow.showMinimized()
-        }
+        text.color: "white"
+        text.text: "\u2500"
+        text.font.pixelSize: 20
+
+        mouseArea.onEntered: minimizeButton.color.a = 0.17
+        mouseArea.onExited: minimizeButton.color.a = 0
+        mouseArea.onPressed: minimizeButton.color.a = 0.4
+        mouseArea.onClicked: rootWindow.showMinimized()
     }
 
     // 导航栏按钮所在区

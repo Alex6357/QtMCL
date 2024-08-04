@@ -33,12 +33,11 @@
  * 这是“启动游戏”中的“启动”页面。
  */
 
-// **有时间尝试把组件写成模板
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Effects
+import "../../QuickMCLComponents"
 
 // 启动页面
 Rectangle {
@@ -61,6 +60,7 @@ Rectangle {
         anchors.centerIn: parent
 
         // 切换启动类型开关
+        // **switch 类型以后有需要再写模板
         Rectangle {
             id: loginSwitch
             width: 160
@@ -212,164 +212,18 @@ Rectangle {
         }// 切换启动类型开关
 
         // 版本选择下拉框
-        ComboBox {
+        QuickMCLComboBox{
             id: chooseVersion
             width: 130
             height: 30
-            model: Interface.getGameList()
-            font.family: "Microsoft YaHei"
+            rightPadding: 30
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.rightMargin: 30
             anchors.bottomMargin: 60
-
-            delegate: ItemDelegate {
-                id: chooseVersionDelegate
-
-                required property var model
-                required property int index
-
-                width: chooseVersion.width
-                height: chooseVersion.height
-                contentItem: Text {
-                    text: chooseVersionDelegate.model[chooseVersion.textRole]
-                    color: "#21be2b"
-                    font: chooseVersion.font
-                    elide: Text.ElideRight
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                background: Rectangle {
-                    width: chooseVersion.width - 4
-                    height: chooseVersion.height
-                    // opacity: enabled ? 1 : 0.3
-                    // opacity: (chooseVersion.currentIndex === index) ? 0 : 1
-                    color: if(chooseVersion.currentIndex === index){
-                               "#dddedf"
-                            } else if(chooseVersionDelegate.hovered){
-                               "#dddedf"
-                            } else {
-                               "white"
-                            }
-                    radius: 5
-                    anchors.centerIn: parent
-
-                    Behavior on color {
-                        PropertyAnimation {
-                            duration: 100
-                        }
-                    }
-                }
-            }
-
-            indicator: Canvas {
-                id: chooseVersionIndicator
-                x: chooseVersion.width - width - 9
-                y: chooseVersion.topPadding + (chooseVersion.availableHeight - height) / 2
-                width: 12
-                height: 8
-                contextType: "2d"
-
-                Connections {
-                    target: chooseVersionPopup
-                    function onOpened(){
-                       chooseVersionIndicator.rotation = -180
-                    }
-                }
-
-                Connections {
-                    target: chooseVersionPopup
-                    function onClosed(){
-                        chooseVersionIndicator.rotation = 0
-                    }
-                }
-
-                Behavior on rotation {
-                    NumberAnimation {
-                        duration: 150
-                    }
-                }
-
-                // onRotationChanged: requestPaint()
-
-                onPaint: {
-                    context.reset();
-                    context.moveTo(0, height);
-                    context.lineTo(width, height);
-                    context.lineTo(width / 2, 0);
-                    context.closePath();
-                    context.fillStyle = /*chooseVersion.pressed ? "#17a81a" : */"#21be2b";
-                    context.fill();
-                }
-            }
-
-            contentItem: Text {
-                leftPadding: 10
-                text: chooseVersion.displayText
-                font: chooseVersion.font
-                color: /*chooseVersion.pressed ? "#17a81a" : */"#21be2b"
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
-            }
-
-            background: Rectangle {
-                implicitWidth: parent.width
-                implicitHeight: parent.height
-                color: chooseVersion.hovered ? "#dddedf" : "white"
-                border.color: /*chooseVersion.pressed ? "#17a81a" : */"#21be2b"
-                border.width: /*chooseVersion.visualFocus ? 2 : */1
-                radius: 5
-                clip: true
-
-                Behavior on color {
-                    PropertyAnimation {
-                        duration: 100
-                    }
-                }
-            }
-
-            popup: Popup {
-                id: chooseVersionPopup
-                // y: chooseVersion.height - 1
-                y: -implicitHeight + 1
-                width: chooseVersion.width
-                implicitHeight: contentItem.implicitHeight + 4 > 244 ? 244 : contentItem.implicitHeight + 4
-                padding: 0
-                topPadding: 2
-                bottomPadding: 2
-
-                contentItem: ListView {
-                    clip: true
-                    implicitHeight: contentHeight
-                    model: chooseVersion.popup.visible ? chooseVersion.delegateModel : null
-                    currentIndex: chooseVersion.highlightedIndex
-                    // spacing: -5
-
-                    ScrollIndicator.vertical: ScrollIndicator { }
-                }
-
-                background: Rectangle {
-                    border.color: "#21be2b"
-                    radius: 5
-                }
-
-                enter: Transition {
-                    NumberAnimation {
-                        property: "opacity"
-                        from: 0
-                        to: 1
-                        duration: 100
-                    }
-                }
-                exit: Transition {
-                    NumberAnimation {
-                        property: "opacity"
-                        from: 1
-                        to: 0
-                        duration: 100
-                    }
-                }
-            }
+            model: Interface.getGameList()
+            num: 8
+            isDown: false
         }
 
         // 头像阴影
@@ -394,213 +248,32 @@ Rectangle {
         }
 
         // 用户选择下拉框
-        ComboBox {
+        QuickMCLComboBox{
             id: choosePlayer
             width: 200
             height: 30
             rightPadding: 30
-            model: models/*ListModel {
-                id: model
-                ListElement { text: "1" }
-                //game.qmlGetGameList();
-            }*/
             editable: true
-            font.family: "Microsoft YaHei"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: skinAvatar.bottom
             anchors.topMargin: 40
+            model: models/*ListModel {
+                    //         id: model
+                    //         ListElement { text: "1" }
+                    //         //game.qmlGetGameList();
+                    //     }*/
+            num: 5
 
             property var models: Interface.getUserList()
 
             onAccepted: {
+                console.debug("accepted")
                 var text = editText
                 if(find(text) === -1){
                     Interface.addToUserList(text)
                     models = Interface.getUserList()
                     console.debug(find(text))
                     currentIndex = find(text)
-                }
-            }
-
-            delegate: ItemDelegate {
-                id: choosePlayerDelegate
-
-                required property var model
-                required property int index
-
-                width: choosePlayer.width
-                height: choosePlayer.height
-                contentItem: Rectangle {
-                    anchors.fill: parent
-                    color: "transparent"
-
-                    Text {
-                        text: choosePlayerDelegate.model[choosePlayer.textRole]
-                        color: "#21be2b"
-                        font: choosePlayer.font
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 10
-                    }
-
-                    Rectangle {
-                        width: 28
-                        height: 28
-                        color: "transparent"
-                        radius: 5
-                        anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        Canvas {
-
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-
-                            }
-                        }
-                    }
-                }
-
-                background: Rectangle {
-                    width: choosePlayer.width - 4
-                    height: choosePlayer.height
-                    // opacity: enabled ? 1 : 0.3
-                    // opacity: (choosePlayer.currentIndex === index) ? 0 : 1
-                    color: if(choosePlayer.currentIndex === index){
-                               "#dddedf"
-                            } else if(choosePlayerDelegate.hovered){
-                               "#dddedf"
-                            } else {
-                               "white"
-                            }
-                    radius: 5
-                    anchors.centerIn: parent
-
-                    Behavior on color {
-                        PropertyAnimation {
-                            duration: 100
-                        }
-                    }
-                }
-            }
-
-            indicator: Canvas {
-                id: choosePlayerIndicator
-                x: choosePlayer.width - width - 9
-                y: choosePlayer.topPadding + (choosePlayer.availableHeight - height) / 2
-                width: 12
-                height: 8
-                contextType: "2d"
-
-                Connections {
-                    target: choosePlayerPopup
-                    function onOpened(){
-                       choosePlayerIndicator.rotation = 180
-                    }
-                }
-
-                Connections {
-                    target: choosePlayerPopup
-                    function onClosed(){
-                        choosePlayerIndicator.rotation = 0
-                    }
-                }
-
-                Behavior on rotation {
-                    NumberAnimation {
-                        duration: 150
-                    }
-                }
-
-                // onRotationChanged: requestPaint()
-
-                onPaint: {
-                    context.reset();
-                    context.moveTo(0, 0);
-                    context.lineTo(width, 0);
-                    context.lineTo(width / 2, height);
-                    context.closePath();
-                    context.fillStyle = /*choosePlayer.pressed ? "#17a81a" : */"#21be2b";
-                    context.fill();
-                }
-            }
-
-            contentItem: TextField {
-                leftPadding: 10
-                rightPadding: /*parent.indicator.width + parent.spacing*/20
-                // width: parent.width - 50
-                text: choosePlayer.displayText
-                font: choosePlayer.font
-                color: /*choosePlayer.pressed ? "#17a81a" : */"#21be2b"
-                verticalAlignment: Text.AlignVCenter
-                // elide: Text.ElideRight
-
-                background: Rectangle {
-                    color: "transparent"
-                }
-            }
-
-            background: Rectangle {
-                implicitWidth: parent.width
-                implicitHeight: parent.height
-                color: choosePlayer.hovered ? "#dddedf" : "white"
-                border.color: /*choosePlayer.pressed ? "#17a81a" : */"#21be2b"
-                border.width: /*choosePlayer.visualFocus ? 2 : */1
-                radius: 5
-                clip: true
-
-                Behavior on color {
-                    PropertyAnimation {
-                        duration: 100
-                    }
-                }
-            }
-
-            popup: Popup {
-                id: choosePlayerPopup
-                y: choosePlayer.height - 1
-                // y: -243
-                width: choosePlayer.width
-                implicitHeight: contentItem.implicitHeight + 4 > 154 ? 154 : contentItem.implicitHeight + 4
-                padding: 0
-                topPadding: 2
-                bottomPadding: 2
-
-                contentItem: ListView {
-                    clip: true
-                    implicitHeight: contentHeight
-                    model: choosePlayer.popup.visible ? choosePlayer.delegateModel : null
-                    currentIndex: choosePlayer.highlightedIndex
-                    // spacing: -5
-
-                    ScrollIndicator.vertical: ScrollIndicator { }
-                }
-
-                background: Rectangle {
-                    border.color: "#21be2b"
-                    radius: 5
-                }
-
-                enter: Transition {
-                    NumberAnimation {
-                        property: "opacity"
-                        from: 0
-                        to: 1
-                        duration: 100
-                    }
-                }
-                exit: Transition {
-                    NumberAnimation {
-                        property: "opacity"
-                        from: 1
-                        to: 0
-                        duration: 100
-                    }
                 }
             }
         }
@@ -615,89 +288,56 @@ Rectangle {
         }
 
         // 启动游戏按钮
-        Rectangle {
+        QuickMCLButton {
             id: startButton
             width: 200
             height: 65
-            color: "white"
-            radius: 5
-            border.color: "#21be2b"
-            border.width: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: choosePlayer.bottom
             anchors.topMargin: 20
 
-            // 颜色渐变动画
-            Behavior on color {
+            property int textFontPixelSize: 24
+
+            Behavior on textFontPixelSize {
                 PropertyAnimation {
-                    duration: 150
+                    duration: 30
                 }
             }
 
-            // 启动游戏文字
-            Text {
-                id: startButtonText
-                anchors.fill: parent
-                text: qsTr("  启动游戏！")
-                color: "#21be2b"
-                font.family: "Microsoft YaHei"
-                font.pixelSize: 24
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-
-                // 颜色动画和大小动画
-                Behavior on color {
-                    PropertyAnimation {
-                        duration: 150
-                    }
-                }
-
-                Behavior on font.pixelSize {
-                    PropertyAnimation {
-                        duration: 30
-                    }
-                }
+            Timer {
+                id: startButtonTextTimer
+                interval: 80
+                onTriggered: startButton.text.font.pixelSize = 24
             }
 
-            // 启动游戏按钮鼠标区
-            MouseArea {
-                id: startButtonMouseArea
-                anchors.fill: parent
-                hoverEnabled: true
+            text.text: qsTr("  启动游戏！")
+            text.font.pixelSize: textFontPixelSize
 
-                // 回到正常大小的计时器
-                Timer {
-                    id: startButtonTextTimer
-                    interval: 80
-                    onTriggered: startButtonText.font.pixelSize = 24
-                }
-
-                onEntered: {
-                    startButtonShadow.shadowEnabled = true
-                    startButtonText.color = "white"
-                    parent.color = "#21be2b"
-                }
-                onExited: {
-                    startButtonShadow.shadowEnabled = false
-                    startButtonText.color = "#21be2b"
-                    parent.color = "white"
-                }
-                onPressed: {
-                    startButtonText.font.pixelSize = 20
-                }
-                onReleased: {
-                    startButtonText.font.pixelSize = 28
-                    startButtonTextTimer.start()
-                }
-                onClicked: {
-                    // launcher.launch("")
-                    // console.debug(game.qmlGetGameList());
-                    // launcher.launch(chooseVersion.currentText)
-                    console.debug(choosePlayer.currentText + " " + chooseVersion.currentText)
-                    // launcher.launch(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
-                    Interface.launchGame(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
-                }
-            }// 启动游戏按钮鼠标区
+            mouseArea.onEntered: {
+                startButtonShadow.shadowEnabled = true
+                text.color = "white"
+                startButton.color = "#21be2b"
+            }
+            mouseArea.onExited: {
+                startButtonShadow.shadowEnabled = false
+                text.color = "#21be2b"
+                startButton.color = "white"
+            }
+            mouseArea.onPressed: {
+                text.font.pixelSize = 20
+            }
+            mouseArea.onReleased: {
+                text.font.pixelSize = 28
+                startButtonTextTimer.start()
+            }
+            mouseArea.onClicked: {
+                // launcher.launch("")
+                // console.debug(game.qmlGetGameList());
+                // launcher.launch(chooseVersion.currentText)
+                console.debug(choosePlayer.currentText + " " + chooseVersion.currentText)
+                // launcher.launch(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
+                // Interface.launchGame(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
+            }
         }// 启动游戏按钮
     }// 中间的内容区
 }// 启动页面

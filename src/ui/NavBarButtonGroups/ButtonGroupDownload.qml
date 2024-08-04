@@ -35,6 +35,7 @@
  */
 
 import QtQuick
+import "../QuickMCLComponents"
 import ".."
 
 // 游戏下载导航栏按钮组
@@ -102,7 +103,6 @@ Rectangle {
     // 按钮默认值
     property int buttonWidth: 80
     property int buttonHeight: 30
-    property int buttonRadius: 5
     property int margin: 10
 
     // 进入动画组
@@ -267,7 +267,7 @@ Rectangle {
         x: minecraftButton.x
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
+        radius: 5
         color: "white"
         opacity: 0
         anchors.verticalCenter: parent.verticalCenter
@@ -293,18 +293,16 @@ Rectangle {
         }
     }// 按钮背景矩形
 
-
-
     // Minecraft 按钮
-    Rectangle {
+    QuickMCLButton {
         id: minecraftButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: modsButton.left
         anchors.rightMargin: parent.margin
         color: "transparent"
+        border.width: 0
         // 默认透明度为 0，防止第一次切换突然显示
         opacity: 0
 
@@ -317,65 +315,37 @@ Rectangle {
         function checkActivate(number: int){
             if(number === ButtonGroupDownload.DownloadFunctions.Minecraft){
                 buttonActivated = true
-                minecraftButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                minecraftButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("Minecraft")
+        text.color: "#00b057"
+        text.font.pixelSize: 14
 
-        // Minecraft 按钮文字
-        Text {
-            id: minecraftButtonText
-            anchors.fill: parent
-            text: qsTr("Minecraft")
-            color: "#00b057"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-                }
-            }
-        }
-
-        // Minecraft 按钮鼠标区
-        MouseArea {
-            id: minecraftButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) minecraft()
-        }
-    }// Minecraft 按钮
+        mouseArea.onEntered: if(!minecraftButton.buttonActivated) minecraftButton.color.a = 0.17
+        mouseArea.onExited: if(!minecraftButton.buttonActivated) minecraftButton.color.a = 0
+        mouseArea.onPressed: if(!minecraftButton.buttonActivated) minecraftButton.color.a = 0.4
+        mouseArea.onClicked: if(!minecraftButton.buttonActivated) minecraft()
+    }
 
     // Mods 按钮
-    Rectangle {
+    QuickMCLButton {
         id: modsButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
+        border.width: 0
         // 默认透明度为 0，防止第一次切换突然显示
         opacity: 0
 
-        // 默认不激活
+        // 默认激活
         property bool buttonActivated: false
 
         // 连接 changed 信号
@@ -384,66 +354,38 @@ Rectangle {
         function checkActivate(number: int){
             if(number === ButtonGroupDownload.DownloadFunctions.Mods){
                 buttonActivated = true
-                modsButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                modsButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("Mods")
+        text.color: "white"
+        text.font.pixelSize: 14
 
-        // Mods 按钮文字
-        Text {
-            id: modsButtonText
-            anchors.fill: parent
-            text: qsTr("Mods")
-            color: "white"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-                }
-            }
-        }
-
-        // Mods 按钮鼠标区
-        MouseArea {
-            id: modsButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) mods()
-        }
-    }// Mods 按钮
+        mouseArea.onEntered: if(!modsButton.buttonActivated) modsButton.color.a = 0.17
+        mouseArea.onExited: if(!modsButton.buttonActivated) modsButton.color.a = 0
+        mouseArea.onPressed: if(!modsButton.buttonActivated) modsButton.color.a = 0.4
+        mouseArea.onClicked: if(!modsButton.buttonActivated) mods()
+    }
 
     // 整合包按钮
-    Rectangle {
+    QuickMCLButton {
         id: packsButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: modsButton.right
         anchors.leftMargin: parent.margin
         color: "transparent"
+        border.width: 0
         // 默认透明度为 0，防止第一次切换突然显示
         opacity: 0
 
-        // 默认不激活
+        // 默认激活
         property bool buttonActivated: false
 
         // 连接 changed 信号
@@ -452,49 +394,21 @@ Rectangle {
         function checkActivate(number: int){
             if(number === ButtonGroupDownload.DownloadFunctions.Packs){
                 buttonActivated = true
-                packsButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                packsButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("整合包")
+        text.color: "white"
+        text.font.pixelSize: 14
 
-        // 整合包按钮文字
-        Text {
-            id: packsButtonText
-            anchors.fill: parent
-            text: qsTr("整合包")
-            color: "white"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-                }
-            }
-        }
-
-        // 整合包按钮鼠标区
-        MouseArea {
-            id: packsButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) packs()
-        }
-    }// 整合包按钮
+        mouseArea.onEntered: if(!packsButton.buttonActivated) packsButton.color.a = 0.17
+        mouseArea.onExited: if(!packsButton.buttonActivated) packsButton.color.a = 0
+        mouseArea.onPressed: if(!packsButton.buttonActivated) packsButton.color.a = 0.4
+        mouseArea.onClicked: if(!packsButton.buttonActivated) packs()
+    }
 }// 游戏下载导航栏按钮组

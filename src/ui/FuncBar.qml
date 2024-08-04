@@ -36,6 +36,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "QuickMCLComponents"
 
 // 功能栏
 Rectangle {
@@ -112,13 +113,13 @@ Rectangle {
             property int buttonHeight: 45
 
             // 启动游戏按钮
-            Rectangle {
+            QuickMCLButton {
                 id: buttonLaunch
                 width: parent.buttonWidth
                 height: parent.buttonHeight
                 color: "#00b057"
+                border.width: 0
 
-                // 默认激活
                 property bool activated: true
 
                 // 连接 changed 信号
@@ -134,53 +135,24 @@ Rectangle {
                     }
                 }
 
-                // 设置按钮颜色渐变动画
-                Behavior on color.a {
-                    PropertyAnimation {
-                        duration: 150
-                    }
-                }
+                text.text: qsTr("启动游戏")
+                text.color: "black"
+                text.font.pixelSize: 16
 
-                // 启动游戏按钮文字
-                Text {
-                    id: buttonLaunchText
-                    anchors.fill: parent
-                    text: qsTr("启动游戏")
-                    color: "#000000"
-                    font.family: "Microsoft YaHei"
-                    font.pixelSize: 16
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    // 设置文字颜色渐变动画
-                    Behavior on color {
-                        PropertyAnimation {
-                            duration: 150
-                        }
-                    }
-                }
-
-                // 启动游戏按钮鼠标区
-                MouseArea {
-                    id: buttonLaunchMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: if(!parent.activated) parent.color.a = 0.4
-                    onExited: if(!parent.activated) parent.color.a = 0
-                    onPressed: if(!parent.activated) parent.color.a = 0.6
-                    onReleased: if(containsMouse && !parent.activated) parent.color.a = 1
-                    onClicked: if(clickable && !parent.activated) functionLaunch()
-                }
-            }// 启动游戏按钮
+                mouseArea.onEntered: if(!buttonLaunch.activated) buttonLaunch.color.a = 0.4
+                mouseArea.onExited: if(!buttonLaunch.activated) buttonLaunch.color.a = 0
+                mouseArea.onPressed: if(!buttonLaunch.activated) buttonLaunch.color.a = 0.6
+                mouseArea.onClicked: if(clickable && !buttonLaunch.activated) functionLaunch()
+            }
 
             // 游戏下载按钮
-            Rectangle {
+            QuickMCLButton {
                 id: buttonDownload
                 width: parent.buttonWidth
                 height: parent.buttonHeight
                 color: "#0000b057"
+                border.width: 0
 
-                // 默认不激活
                 property bool activated: false
 
                 // 连接 changed 信号
@@ -196,53 +168,24 @@ Rectangle {
                     }
                 }
 
-                // 设置按钮颜色渐变动画
-                Behavior on color {
-                    PropertyAnimation {
-                        duration: 150
-                    }
-                }
+                text.text: qsTr("下载游戏")
+                text.color: "black"
+                text.font.pixelSize: 16
 
-                // 游戏下载按钮文字
-                Text {
-                    id: buttonDownloadText
-                    anchors.fill: parent
-                    text: qsTr("下载游戏")
-                    color: "#000000"
-                    font.family: "Microsoft YaHei"
-                    font.pixelSize: 16
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    // 设置文字颜色渐变动画
-                    Behavior on color.a {
-                        PropertyAnimation {
-                            duration: 150
-                        }
-                    }
-                }
-
-                // 游戏下载按钮鼠标区
-                MouseArea {
-                    id: buttonDownloadMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: if(!parent.activated) parent.color.a = 0.4
-                    onExited: if(!parent.activated) parent.color.a = 0
-                    onPressed: if(!parent.activated) parent.color.a = 0.6
-                    onReleased: if(containsMouse && !parent.activated) parent.color.a = 1
-                    onClicked: if(clickable && !parent.activated) functionDownload()
-                }
-            }// 游戏下载按钮
+                mouseArea.onEntered: if(!buttonDownload.activated) buttonDownload.color.a = 0.4
+                mouseArea.onExited: if(!buttonDownload.activated) buttonDownload.color.a = 0
+                mouseArea.onPressed: if(!buttonDownload.activated) buttonDownload.color.a = 0.6
+                mouseArea.onClicked: if(clickable && !buttonDownload.activated) functionDownload()
+            }
 
             // 全局设置按钮
-            Rectangle {
+            QuickMCLButton {
                 id: buttonSettings
                 width: parent.buttonWidth
                 height: parent.buttonHeight
                 color: "#0000b057"
+                border.width: 0
 
-                // 默认不激活
                 property bool activated: false
 
                 // 连接 changed 信号
@@ -258,53 +201,25 @@ Rectangle {
                     }
                 }
 
-                // 设置按钮颜色渐变动画
-                Behavior on color.a {
-                    PropertyAnimation {
-                        duration: 150
-                    }
-                }
+                text.text: qsTr("全局设置")
+                text.color: "black"
+                text.font.pixelSize: 16
 
-                // 全局设置按钮文字
-                Text {
-                    id: buttonSettingsText
-                    anchors.fill: parent
-                    text: qsTr("全局设置")
-                    color: "#000000"
-                    font.family: "Microsoft YaHei"
-                    font.pixelSize: 16
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+                mouseArea.onEntered: if(!buttonSettings.activated) buttonSettings.color.a = 0.4
+                mouseArea.onExited: if(!buttonSettings.activated) buttonSettings.color.a = 0
+                mouseArea.onPressed: if(!buttonSettings.activated) buttonSettings.color.a = 0.6
+                mouseArea.onClicked: if(clickable && !buttonSettings.activated) functionSettings()
+            }
 
-                    // 设置文字颜色渐变动画
-                    Behavior on color {
-                        PropertyAnimation {
-                            duration: 150
-                        }
-                    }
-                }
-
-                // 全局设置按钮鼠标区
-                MouseArea {
-                    id: buttonSettingsMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: if(!parent.activated) parent.color.a = 0.4
-                    onExited: if(!parent.activated) parent.color.a = 0
-                    onPressed: if(!parent.activated) parent.color.a = 0.6
-                    onReleased: if(containsMouse && !parent.activated) parent.color.a = 1
-                    onClicked: if(clickable && !parent.activated) functionSettings()
-                }
-            }// 全局设置按钮
 
             // 更多信息按钮
-            Rectangle {
+            QuickMCLButton {
                 id: buttonAbout
                 width: parent.buttonWidth
                 height: parent.buttonHeight
                 color: "#0000b057"
+                border.width: 0
 
-                // 默认不激活
                 property bool activated: false
 
                 // 连接 changed 信号
@@ -320,44 +235,15 @@ Rectangle {
                     }
                 }
 
-                // 设置按钮颜色渐变动画
-                Behavior on color.a {
-                    PropertyAnimation {
-                        duration: 150
-                    }
-                }
+                text.text: qsTr("更多信息")
+                text.color: "black"
+                text.font.pixelSize: 16
 
-                // 更多信息按钮文字
-                Text {
-                    id: buttonAboutText
-                    anchors.fill: parent
-                    text: qsTr("更多信息")
-                    color: "#000000"
-                    font.family: "Microsoft YaHei"
-                    font.pixelSize: 16
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    // 设置文字颜色渐变动画
-                    Behavior on color {
-                        PropertyAnimation {
-                            duration: 150
-                        }
-                    }
-                }
-
-                // 更多信息按钮鼠标区
-                MouseArea {
-                    id: buttonAboutMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: if(!parent.activated) parent.color.a = 0.4
-                    onExited: if(!parent.activated) parent.color.a = 0
-                    onPressed: if(!parent.activated) parent.color.a = 0.6
-                    onReleased: if(containsMouse && !parent.activated) parent.color.a = 1
-                    onClicked: if(clickable && !parent.activated) functionAbout()
-                }
-            }// 更多信息按钮
+                mouseArea.onEntered: if(!buttonAbout.activated) buttonAbout.color.a = 0.4
+                mouseArea.onExited: if(!buttonAbout.activated) buttonAbout.color.a = 0
+                mouseArea.onPressed: if(!buttonAbout.activated) buttonAbout.color.a = 0.6
+                mouseArea.onClicked: if(clickable && !buttonAbout.activated) functionAbout()
+            }
         }// 功能栏按钮垂直分布
     }// 功能栏的内容区
 }// 功能栏

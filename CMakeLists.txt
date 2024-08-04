@@ -56,6 +56,8 @@ set(UTILS_SOURCES
 )
 
 set(QML_SOURCES
+    src/ui/QuickMCLComponents/QuickMCLButton.qml
+    src/ui/QuickMCLComponents/QuickMCLComboBox.qml
     src/ui/Main.qml
     src/ui/NavBar.qml
     src/ui/FuncBar.qml

@@ -34,6 +34,7 @@
  */
 
 import QtQuick
+import "../QuickMCLComponents"
 import ".."
 
 // 启动游戏导航栏按钮组
@@ -105,7 +106,6 @@ Rectangle {
     // 按钮默认值
     property int buttonWidth: 80
     property int buttonHeight: 30
-    property int buttonRadius: 5
     property int margin: 10
 
     // 进入动画组
@@ -312,7 +312,7 @@ Rectangle {
         x: launchButton.x
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
+        radius: 5
         color: "white"
         anchors.verticalCenter: parent.verticalCenter
         // 连接 changed 信号
@@ -340,15 +340,15 @@ Rectangle {
     }// 按钮背景矩形
 
     // 启动按钮
-    Rectangle {
+    QuickMCLButton {
         id: launchButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: settingsButton.left
         anchors.rightMargin: parent.margin
         color: "transparent"
+        border.width: 0
 
         // 默认激活
         property bool buttonActivated: true
@@ -359,65 +359,36 @@ Rectangle {
         function checkActivate(number: int){
             if(number === ButtonGroupLaunch.LaunchFunctions.Launch){
                 buttonActivated = true
-                launchButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                launchButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("启动")
+        text.color: "#00b057"
+        text.font.pixelSize: 14
 
-        // 启动按钮文字
-        Text {
-            id: launchButtonText
-            anchors.fill: parent
-            text: qsTr("启动")
-            color: "#00b057"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-
-                }
-            }
-        }
-
-        // 启动按钮鼠标区
-        MouseArea {
-            id: launchButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) launch()
-        }
-    }// 启动按钮
+        mouseArea.onEntered: if(!launchButton.buttonActivated) launchButton.color.a = 0.17
+        mouseArea.onExited: if(!launchButton.buttonActivated) launchButton.color.a = 0
+        mouseArea.onPressed: if(!launchButton.buttonActivated) launchButton.color.a = 0.4
+        mouseArea.onClicked: if(!launchButton.buttonActivated) launch()
+    }
 
     // 游戏设置按钮
-    Rectangle {
+    QuickMCLButton {
         id: settingsButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.horizontalCenter
         anchors.rightMargin: - parent.margin / 2
         color: "transparent"
+        border.width: 0
 
-        // 默认不激活
+        // 默认激活
         property bool buttonActivated: false
 
         // 连接 changed 信号
@@ -426,64 +397,36 @@ Rectangle {
         function checkActivate(number: int){
             if(number === ButtonGroupLaunch.LaunchFunctions.Settings){
                 buttonActivated = true
-                settingsButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                settingsButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("游戏设置")
+        text.color: "white"
+        text.font.pixelSize: 14
 
-        // 游戏设置按钮文字
-        Text {
-            id: settingsButtonText
-            anchors.fill: parent
-            text: qsTr("游戏设置")
-            color: "white"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-                }
-            }
-        }
-
-        // Mods 按钮鼠标区
-        MouseArea {
-            id: settingsButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) settings()
-        }
-    }// 游戏设置按钮
+        mouseArea.onEntered: if(!settingsButton.buttonActivated) settingsButton.color.a = 0.17
+        mouseArea.onExited: if(!settingsButton.buttonActivated) settingsButton.color.a = 0
+        mouseArea.onPressed: if(!settingsButton.buttonActivated) settingsButton.color.a = 0.4
+        mouseArea.onClicked: if(!settingsButton.buttonActivated) settings()
+    }
 
     // MOD 管理按钮
-    Rectangle {
+    QuickMCLButton {
         id: modsButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: settingsButton.right
         anchors.leftMargin: parent.margin
         color: "transparent"
+        border.width: 0
 
-        // 默认不激活
+        // 默认激活
         property bool buttonActivated: false
 
         // 连接 changed 信号
@@ -492,65 +435,36 @@ Rectangle {
         function checkActivate(number: int){
             if(number === ButtonGroupLaunch.LaunchFunctions.Mods){
                 buttonActivated = true
-                modsButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                modsButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("MOD 管理")
+        text.color: "white"
+        text.font.pixelSize: 14
 
-        // MOD 管理按钮文字
-        Text {
-            id: modsButtonText
-            anchors.fill: parent
-            text: qsTr("MOD 管理")
-            color: "white"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-
-                }
-            }
-        }
-
-        // MOD 管理按钮鼠标区
-        MouseArea {
-            id: modsButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) mods()
-        }
-    }// MOD 管理按钮
+        mouseArea.onEntered: if(!modsButton.buttonActivated) modsButton.color.a = 0.17
+        mouseArea.onExited: if(!modsButton.buttonActivated) modsButton.color.a = 0
+        mouseArea.onPressed: if(!modsButton.buttonActivated) modsButton.color.a = 0.4
+        mouseArea.onClicked: if(!modsButton.buttonActivated) mods()
+    }
 
     // 自动安装按钮
-    Rectangle {
+    QuickMCLButton {
         id: installButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: modsButton.right
         anchors.leftMargin: parent.margin
         color: "transparent"
+        border.width: 0
 
-        // 默认不激活
+        // 默认激活
         property bool buttonActivated: false
 
         // 连接 changed 信号
@@ -559,50 +473,21 @@ Rectangle {
         function checkActivate(number: int){
             if(number === ButtonGroupLaunch.LaunchFunctions.Install){
                 buttonActivated = true
-                installButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                installButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("自动安装")
+        text.color: "white"
+        text.font.pixelSize: 14
 
-        // 自动安装按钮文字
-        Text {
-            id: installButtonText
-            anchors.fill: parent
-            text: qsTr("自动安装")
-            color: "white"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-
-                }
-            }
-        }
-
-        // 自动安装按钮鼠标区
-        MouseArea {
-            id: installButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) install()
-        }
-    }// 自动安装按钮
+        mouseArea.onEntered: if(!installButton.buttonActivated) installButton.color.a = 0.17
+        mouseArea.onExited: if(!installButton.buttonActivated) installButton.color.a = 0
+        mouseArea.onPressed: if(!installButton.buttonActivated) installButton.color.a = 0.4
+        mouseArea.onClicked: if(!installButton.buttonActivated) install()
+    }
 }// 启动游戏导航栏按钮组
