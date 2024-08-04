@@ -218,6 +218,10 @@ public:
 
     // 从 jsonArray 读取已知游戏
     static void readGamesFromArray(const QJsonArray& array);
+    // 扫描游戏
+    static void scanGame(const QString& path = "");
+    // 用路径注册游戏
+    static const bool registerGameByPath(const QString& path, const bool isSeperate = true);
     // 获取 gameList 指针
     static QMap<QString, Game*>* const getGameListPtr();
     // 获取 globalConfig 指针

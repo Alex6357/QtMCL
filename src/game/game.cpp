@@ -154,16 +154,6 @@ void QuickMCL::game::Game::setQuickPlayRealms(int realms){
     this->quickPlayRealms = realms;
 }
 
-// 从 array 读取已知游戏
-void QuickMCL::game::Game::readGamesFromArray(const QJsonArray& array){
-    QJsonArray::ConstIterator iterator = array.constBegin();
-    QJsonArray::ConstIterator end = array.constEnd();
-    for(; iterator != end; iterator++){
-        QString name = iterator->toObject().value("name").toString();
-        gameList()->insert(name, new QuickMCL::game::Game(name));
-    }
-}
-
 // 从 jsonObject 读取游戏配置
 void QuickMCL::game::Game::readConfigFromObject(const QJsonObject& object){
     QString javaPath = object.value("java").toString();
@@ -283,6 +273,80 @@ const int QuickMCL::game::Game::getJavaVersion() const {
     } else {
         return 8;
     }
+}
+
+// 从 array 读取已知游戏
+void QuickMCL::game::Game::readGamesFromArray(const QJsonArray& array){
+    QJsonArray::ConstIterator iterator = array.constBegin();
+    QJsonArray::ConstIterator end = array.constEnd();
+    for(; iterator != end; iterator++){
+        QString name = iterator->toObject().value("name").toString();
+        gameList()->insert(name, new QuickMCL::game::Game(name));
+    }
+}
+
+// 扫描游戏
+void QuickMCL::game::Game::scanGame(const QString& path){
+    qDebug() << "[QuickMCL::game::Game::scanGame] 开始扫描游戏：";
+    QString gameDir;
+    if (path == ""){
+        gameDir = config::Config::getGlobalConfigPtr()->getActuralGameDir();
+    } else {
+        gameDir = path;
+    }
+    qDebug() << "[QuickMCL::game::Game::scanGame] gameDir: " << gameDir;
+    {
+        qDebug() << "[QuickMCL::game::Game::scanGame] 扫描隔离版本隔离游戏：";
+        const QFileInfoList list = QDir(gameDir + '/' + "versions").entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot);
+        qDebug() << "[QuickMCL::game::Game::scanGame] list: " << list;
+        for (const QFileInfo& game : list){
+            QString gameName = game.fileName();
+            if (QFileInfo(game.absoluteFilePath() + '/' + gameName + ".jar").isFile() &&
+                QFileInfo(game.absoluteFilePath() + '/' + gameName + ".json").isFile()){
+                qDebug() << "[QuickMCL::game::Game::scanGame] 发现游戏：";
+                qDebug() << "[QuickMCL::game::Game::scanGame] path: " << game.absoluteFilePath() + '/' + game.fileName() + ".jar";
+                registerGameByPath(game.absoluteFilePath() + '/' + game.fileName() + ".jar");
+            }
+        }
+    }
+    {
+        qDebug() << "[QuickMCL::game::Game::scanGame] 扫描非隔离版本隔离游戏：";
+        const QFileInfoList list = QDir(gameDir).entryInfoList({"*.jar"}, QDir::Files);
+        for (const QFileInfo& game : list){
+            if (QFileInfo(game.absolutePath() + '/' + game.completeBaseName() + ".json").isFile()){
+                qDebug() << "[QuickMCL::game::Game::scanGame] 发现游戏：";
+                qDebug() << "[QuickMCL::game::Game::scanGame] path: " << game.absoluteFilePath();
+                registerGameByPath(game.absoluteFilePath(), false);
+            }
+        }
+    }
+}
+
+// 用路径注册游戏
+const bool QuickMCL::game::Game::registerGameByPath(const QString& path, const bool isSeperate){
+    qDebug() << "[QuickMCL::game::Game::registerGameByPath] 注册游戏：";
+    qDebug() << "[QuickMCL::game::Game::registerGameByPath] path: " << path;
+    qDebug() << "[QuickMCL::game::Game::registerGameByPath] isSeperate: " << isSeperate;
+    const QFileInfo game(path);
+    if (game.isFile() &&
+        QFileInfo(game.absolutePath() + '/' + game.completeBaseName() + ".json").isFile()){
+        qDebug() << "[QuickMCL::game::Game::registerGameByPath] 路径合法，正在注册";
+        // **以后可能会有多游戏路径需求，暂时只判断不包含，或包含但是版本隔离不同
+        // **现在还不能判断包含但是版本隔离不同，其他部分代码没法区分同样名称的不同版本
+        if (!gameList->contains(game.completeBaseName())/* || isSeperate != gameList->find(game.completeBaseName()).value()->isSeperate()*/){
+            Game* ptr = new Game(game.completeBaseName());
+            gameList->insert(game.completeBaseName(), ptr);
+            if (!isSeperate){
+                ptr->setSeperate(false);
+            }
+            return true;
+        }
+        qDebug() << "[QuickMCL::game::Game::registerGameByPath] 注册失败，游戏已存在";
+    }
+    qDebug() << "[QuickMCL::game::Game::registerGameByPath] 注册失败，路径不合法：";
+    qDebug() << "[QuickMCL::game::Game::registerGameByPath] game is file: " << game.isFile();
+    qDebug() << "[QuickMCL::game::Game::registerGameByPath] " << game.absolutePath() + '/' + game.completeBaseName() + ".json" << " is file: " << QFileInfo(game.absolutePath() + '/' + game.completeBaseName() + ".json").isFile();
+    return false;
 }
 
 // 获取 gameList 指针
