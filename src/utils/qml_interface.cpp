@@ -63,4 +63,5 @@ const QStringList QuickMCL::utils::QmlInterface::getGameList(){
 // 向 userList 中添加用户
 void QuickMCL::utils::QmlInterface::addUserToList(const QString& user){
     QuickMCL::config::Config::getUserListPtr()->append(user);
+    QuickMCL::config::Config::getGlobalConfigPtr()->writeConfigToFile();
 }
