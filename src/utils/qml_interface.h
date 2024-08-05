@@ -19,6 +19,8 @@ public:
     Q_INVOKABLE static const qint64 launchGame(const QString& name, const QString& playerName, const int type = 0);
     // 获取 userList
     Q_INVOKABLE static const QStringList getUserList();
+    // 向 userList 中添加用户
+    Q_INVOKABLE static void addUserToList(const QString& user);
     // 获取 gameList
     Q_INVOKABLE static const QStringList getGameList();
 signals:

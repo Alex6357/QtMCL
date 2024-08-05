@@ -267,12 +267,10 @@ Rectangle {
             property var models: Interface.getUserList()
 
             onAccepted: {
-                console.debug("accepted")
                 var text = editText
                 if(find(text) === -1){
-                    Interface.addToUserList(text)
+                    Interface.addUserToList(text)
                     models = Interface.getUserList()
-                    console.debug(find(text))
                     currentIndex = find(text)
                 }
             }
@@ -336,7 +334,7 @@ Rectangle {
                 // launcher.launch(chooseVersion.currentText)
                 console.debug(choosePlayer.currentText + " " + chooseVersion.currentText)
                 // launcher.launch(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
-                // Interface.launchGame(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
+                Interface.launchGame(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
             }
         }// 启动游戏按钮
     }// 中间的内容区
