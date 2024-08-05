@@ -54,6 +54,9 @@ int main(int argc, char *argv[])
     QuickMCL::utils::QmlInterface interface;
 
     QThreadPool::globalInstance()->start(QuickMCL::utils::Java::scanJava);  // **这位置好像不对，需要改地方
+    // QFuture<void> scanGameFuture = QtConcurrent::run(QuickMCL::game::Game::scanGame, "");
+    QuickMCL::game::Game::readGameConfig();
+    QuickMCL::game::Game::scanGame();
 
     QGuiApplication app(argc, argv);
 

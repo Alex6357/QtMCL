@@ -62,6 +62,7 @@ QuickMCL::config::Config::Config(QObject *parent){
     this->systemVersion = QuickMCL::utils::getSystemVersion();
     // 自动读取配置文件
     readConfig();
+    writeConfigToFile();
 }
 
 // 默认析构函数
@@ -138,29 +139,36 @@ void QuickMCL::config::Config::setTempDir(const QString tempDir){
 
 // 自动寻找并读取配置文件
 void QuickMCL::config::Config::readConfig(){
+    qDebug() << "[QuickMCL::config::Config::readConfig] 正在读取配置文件：";
     // 检查并读取本地配置文件
+    qDebug() << "[QuickMCL::config::Config::readConfig] 正在读取本地配置文件";
+    qDebug() << "[QuickMCL::config::Config::readConfig] file: " << getConfigDirName() + configFile;
     if(QFileInfo(getConfigDirName()).isDir() && QFileInfo(getConfigDirName() + QuickMCL::config::configFile).isFile()){
         readConfigFromFile(getConfigDirName() + QuickMCL::config::configFile);
         return;
-        // 检查并读取全局配置文件
     } else {
-        if(QFileInfo(getGlobalConfigDir()).isDir() && QFileInfo(configDir + QuickMCL::config::configFile).isFile()){
+        // 检查并读取全局配置文件
+        qDebug() << "[QuickMCL::config::Config::readConfig] 未找到本地配置文件，正在读取全局配置文件";
+        qDebug() << "[QuickMCL::config::Config::readConfig] file: " << getGlobalConfigDir() + configFile;
+        if(QFileInfo(getGlobalConfigDir()).isDir() && QFileInfo(getGlobalConfigDir() + QuickMCL::config::configFile).isFile()){
             this->configDirPlace = QuickMCL::config::configDirPlace::globalConfigDir;
-            readConfigFromFile(configDir + QuickMCL::config::configFile);
+            readConfigFromFile(getGlobalConfigDir() + QuickMCL::config::configFile);
             return;
         }
     }
     // **先没有考虑其他情况，直接进行
     // 判断并新建配置文件夹和文件
-    if(!QFileInfo::exists(getGlobalConfigDir())){
-        QDir().mkdir(getGlobalConfigDir());
-    } else if (!QFileInfo(getGlobalConfigDir()).isDir()){
+    qDebug() << "[QuickMCL::config::Config::readConfig] 未找到配置文件，正在新建本地配置文件";
+    if(!QFileInfo::exists(getConfigDirName())){
+        QDir().mkdir(getConfigDirName());
+    } else if (!QFileInfo(getConfigDirName()).isDir()){
         // **err
         return;
     } else {
         // **不能读写
     }
-    QuickMCL::utils::makeFile(getGlobalConfigDir() + configFile);
+    qDebug() << "[QuickMCL::config::Config::readConfig] file: " << getConfigDirName() + configFile;
+    QuickMCL::utils::makeFile(getConfigDirName() + configFile);
 }
 
 // 从配置文件读取配置
@@ -214,10 +222,10 @@ const QString QuickMCL::config::Config::getConfigDirName() const {
 const QString QuickMCL::config::Config::getGlobalConfigDir() const {
     if (this->system == QuickMCL::config::windows){
         // Windows 保存在 Roaming
-        return QDir::toNativeSeparators(QDir(QDir::homePath() + "/" + "AppData/" + "Roaming/" + QuickMCL::config::windowsConfigDir).absolutePath());
+        return QDir(QDir::homePath() + "/" + "AppData/" + "Roaming/" + QuickMCL::config::windowsConfigDir).absolutePath() + '/';
     } else {
         // 其余保存在 home
-        return QDir::toNativeSeparators(QDir(QDir::homePath() + "/" + QuickMCL::config::configDir).absolutePath());
+        return QDir(QDir::homePath() + "/" + QuickMCL::config::configDir).absolutePath() + '/';
     }
 }
 
