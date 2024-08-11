@@ -75,7 +75,7 @@ const QStringList QuickMCL::game::Launcher::getArguments(const QString& name,
                                                          const QString& token){
     const QuickMCL::game::Game* const game = Game::getGameListPtr()->value(name);
     QStringList arguments;
-    arguments.append(QString("-Xms").append(QString::number(game->getMaximumMemory())).append("M"));
+    arguments.append(QString("-Xms").append(QString::number(game->getMinimumMemory())).append("M"));
     arguments.append(QString("-Xmx").append(QString::number(game->getMaximumMemory())).append("M"));
     arguments.append(game->getJvmParameters());
     arguments.append("-Dminecraft.launcher.brand=QuickMCL");
