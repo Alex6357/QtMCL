@@ -58,9 +58,9 @@ const QString QuickMCL::game::Launcher::getCommand(const QString& name){
 // 自动获取适合的 java
 const QString QuickMCL::game::Launcher::autoGetJava(const QString& name){
     const QuickMCL::game::Game* const game = Game::getGameListPtr()->value(name);
-    QuickMCL::utils::JavaList* const javaList = QuickMCL::utils::Java::getJavaListPtr();
+    QuickMCL::utils::JavaMap javaList = *QuickMCL::utils::Java::getJavaListPtr();
     const int recommendJavaVersion = game->getJavaVersion();
-    for (const QuickMCL::utils::Java* const java : *javaList){
+    for (const QuickMCL::utils::Java* const java : javaList){
         if (java->getVersion() == recommendJavaVersion){
             return java->getPath();
         }
