@@ -273,6 +273,7 @@ Rectangle {
                     models = Interface.getUserList()
                     currentIndex = find(text)
                 }
+                focus = false
             }
         }
 
