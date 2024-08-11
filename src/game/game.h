@@ -84,7 +84,7 @@ private:
         "-XX:-UseAdaptiveSizePolicy",
         "-Dfml.ignoreInvalidMinecraftCertificates=true",
         "-Dfml.ignorePatchDiscrepancies=true",
-        QDir::toNativeSeparators("-Dlog4j.configurationFile=${game_directory}/log4j2.xml"),
+        QDir::toNativeSeparators("-Dlog4j.configurationFile=${game_directory}log4j2.xml"),
         "-XX:+UnlockExperimentalVMOptions",
         "-XX:+UseG1GC",
         "-XX:G1NewSizePercent=20",
