@@ -48,19 +48,19 @@
 
 namespace QuickMCL::game {
 // java 库位置
-static const char* libraryDir = "libraries/";
+extern const char* libraryDir;
 // 资源文件目录
-static const char* assetsRoot = "assets/";
+extern const char* assetsRoot;
 // 用户类型
-static const char* userType = "msa";
+extern const char* userType;
 // 版本类型
-static const char* versionType = "QuickMCL";
+extern const char* versionType;
 // 最小内存大小，单位 MB
-static const int minimumMemory = 256;
+extern const int minimumMemory;
 // log4j2 配置文件位置
-static const char* log4j2Name = "log4j2.xml";
+extern const char* log4j2Name;
 // 快速游戏日志文件路径
-static const char* quickPlayPath = "quickplaylog.json";
+extern const char* quickPlayPath;
 
 class Game
 {

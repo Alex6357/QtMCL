@@ -44,6 +44,21 @@
 namespace QuickMCL::game {
 Q_GLOBAL_STATIC(Game, globalGameConfig)
 Q_GLOBAL_STATIC(gameMap, gameList)
+
+// java 库位置
+const char* libraryDir = "libraries/";
+// 资源文件目录
+const char* assetsRoot = "assets/";
+// 用户类型
+const char* userType = "msa";
+// 版本类型
+const char* versionType = "QuickMCL";
+// 最小内存大小，单位 MB
+const int minimumMemory = 256;
+// log4j2 配置文件位置
+const char* log4j2Name = "log4j2.xml";
+// 快速游戏日志文件路径
+const char* quickPlayPath = "quickplaylog.json";
 }
 
 // 默认构造函数

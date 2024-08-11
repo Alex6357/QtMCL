@@ -44,17 +44,17 @@
 
 namespace QuickMCL::config{
 // 游戏目录名称
-static const char* gameDir = ".minecraft/";
+extern const char* gameDir;
 // 基本配置文件目录
-static const char* configDir = ".quickmcl/";
+extern const char* configDir;
 // Windows 配置文件目录
-static const char* windowsConfigDir = "QuickMCL/";
+extern const char* windowsConfigDir;
 // 配置文件名称
-static const char* configFile = "config.json";
+extern const char* configFile;
 // 游戏列表文件名称
-static const char* gameListFile = "games.json";
+extern const char* gameListFile;
 // 临时目录名称
-static const char* tempDir = "quickmcl/";
+extern const char* tempDir;
 
 // 游戏目录位置枚举，local 为启动器相同目录，global 为用户目录，custom 为自定义
 enum gameDirPlace {

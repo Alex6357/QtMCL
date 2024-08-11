@@ -21,13 +21,14 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     )
 endif()
 
-configure_file(src/version.h.in outfiles/version.h)
+configure_file(src/version.cpp.in outfiles/version.cpp)
 
 set(MAIN_SOURCES
     src/main.cpp
     src/config.h
     src/config.cpp
-    ${CMAKE_BINARY_DIR}/outfiles/version.h
+    src/version.h
+    ${CMAKE_BINARY_DIR}/outfiles/version.cpp
     ${WINDOWS_SOURCES}
     ${LINUX_SOURCES}
     ${FREEBSD_SOURCES}
@@ -52,6 +53,7 @@ set(UTILS_SOURCES
     src/utils/json_parser.cpp
     # urls
     src/utils/urls.h
+    src/utils/urls.cpp
     # java
     src/utils/java.h
     src/utils/java.cpp

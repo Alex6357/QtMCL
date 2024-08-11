@@ -50,6 +50,19 @@ namespace QuickMCL::config {
 // 已知用户列表
 Q_GLOBAL_STATIC(QStringList, userList)
 Q_GLOBAL_STATIC(Config, globalConfig)
+
+// 游戏目录名称
+const char* gameDir = ".minecraft/";
+// 基本配置文件目录
+const char* configDir = ".quickmcl/";
+// Windows 配置文件目录
+const char* windowsConfigDir = "QuickMCL/";
+// 配置文件名称
+const char* configFile = "config.json";
+// 游戏列表文件名称
+const char* gameListFile = "games.json";
+// 临时目录名称
+const char* tempDir = "quickmcl/";
 }
 
 // 默认构造函数

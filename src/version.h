@@ -37,6 +37,6 @@
 #define VERSION_H
 
 namespace QuickMCL {
-    static const char* version = "@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@.@PROJECT_VERSION_TWEAK@";
+    extern const char* version;
 }
 #endif // VERSION_H
