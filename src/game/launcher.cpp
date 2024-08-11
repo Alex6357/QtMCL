@@ -266,6 +266,11 @@ const QStringList QuickMCL::game::Launcher::getGameParameters(const Game* const 
         // 直接读取字符串
         QString minecraftArguments = gameJsonObject.value("minecraftArguments").toString();
         gameParameters.append(minecraftArguments.split(" "));
+        // 之前没有自定义大小参数的也直接拼在上面
+        if (game->getFeatures().contains("has_custom_resolution")){
+            gameParameters.append({"--width", "${resolution_width}", "--height", "${resolution_height}"});
+        }
+
     }
 
     return gameParameters;
