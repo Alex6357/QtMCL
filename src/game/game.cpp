@@ -54,7 +54,7 @@ QuickMCL::game::Game::Game(){
 // 根据游戏名称新建配置，并从 globalGameConfig 复制配置
 QuickMCL::game::Game::Game(const QString& name){
     setName(name);
-    setJava(globalGameConfig->getJava());
+    setJavaPath(globalGameConfig->getJavaPath());
     setSeperate(globalGameConfig->isSeperate());
     setMinimumMemory(globalGameConfig->getMinimumMemory());
     setMaximumMemory(globalGameConfig->getMaximumMemory());
@@ -74,14 +74,26 @@ void QuickMCL::game::Game::setName(const QString& name){
     this->name = name;
 }
 
-// 设置游戏 java
-void QuickMCL::game::Game::setJava(const QuickMCL::utils::Java* java){
-    this->java = java;
+// 获取游戏 java
+const QuickMCL::utils::Java* QuickMCL::game::Game::getJava() const {
+    return utils::Java::getJavaPtrByPath(getJavaPath());
 }
 
-// 获取 java 路径
-const QString QuickMCL::game::Game::getJavaPath() const {
-    return this->java->getPath();
+// 设置游戏 java
+void QuickMCL::game::Game::setJava(const QuickMCL::utils::Java* java){
+    if (java == nullptr){
+        this->javaPath = "";
+    } else {
+        this->javaPath = java->getPath();
+    }
+    if (!(this == globalGameConfig)){
+        writeGameConfig();
+    }
+}
+
+// 设置 java 路径
+void QuickMCL::game::Game::setJavaPath(const QString& path){
+    this->javaPath = path;
 }
 
 // 设置是否版本隔离
@@ -156,13 +168,7 @@ void QuickMCL::game::Game::setQuickPlayRealms(int realms){
 
 // 从 jsonObject 读取游戏配置
 void QuickMCL::game::Game::readConfigFromObject(const QJsonObject& object){
-    QString javaPath = object.value("java").toString();
-    for (const utils::Java* const java : *utils::Java::getJavaListPtr()){
-        if (java->getPath() == javaPath){
-            setJava(java);
-            break;
-        }
-    }
+    setJavaPath(object.value("java").toString());
     setSeperate(object.value("isSeperate").toBool());
     setMinimumMemory(object.value("minimumMemory").toInt());
     setMaximumMemory(object.value("maximumMemory").toInt());
@@ -191,9 +197,7 @@ void QuickMCL::game::Game::readConfigFromObject(const QJsonObject& object){
 const QJsonObject QuickMCL::game::Game::getConfigObject() const {
     QJsonObject configObject;
     configObject.insert("name", this->name);
-    if (this->java != nullptr){
-        configObject.insert("java", this->java->getPath());
-    }
+    configObject.insert("java", this->javaPath);
     configObject.insert("isSeperate", this->seperate);
     configObject.insert("minimumMemory", this->minimumMemory);
     configObject.insert("maximumMemory", this->maximumMemory);

@@ -66,25 +66,38 @@ Rectangle {
     onChanged: {
         // 寻找主功能
         switch(funcBarFunction){
-
-        // 主功能为“启动游戏”
-        case FuncBar.FunctionTypes.Launch:
-            // 寻找子功能
-            switch(buttonGroupFunction){
-            // 子功能为“启动”
-            case ButtonGroupLaunch.LaunchFunctions.Launch:
-                contentAreaLoader.source = "ContentAreaPages/LaunchPages/PageLaunch.qml"
+            // 主功能为“启动游戏”
+            case FuncBar.FunctionTypes.Launch:
+                // 寻找子功能
+                switch(buttonGroupFunction){
+                    // 子功能为“启动”
+                    case ButtonGroupLaunch.LaunchFunctions.Launch:
+                        contentAreaLoader.source = "ContentAreaPages/LaunchPages/PageLaunch.qml"
+                        break
+                    // fallback
+                    default:
+                        contentAreaLoader.source = ""
+                }
                 break
+
+            // 主功能为“全局设置”
+            case FuncBar.FunctionTypes.Settings:
+                // 寻找子功能
+                switch(buttonGroupFunction){
+                    // 子功能为“游戏设置”
+                    case ButtonGroupSettings.SettingsFunctions.GameSettings:
+                        contentAreaLoader.source = "ContentAreaPages/SettingsPages/PageGameSettings.qml"
+                        break
+                    // fallback
+                    default:
+                        contentAreaLoader.source = ""
+                }
+                break
+
             // fallback
             default:
                 contentAreaLoader.source = ""
-            }
-            break
-
-        // fallback
-        default:
-            contentAreaLoader.source = ""
-            break
+                break
         }
     }
 
@@ -105,6 +118,13 @@ Rectangle {
     }
     Connections {
         target: navBar.buttonGroupDownload
+        function onChanged(number: int){
+            buttonGroupFunction = number
+            changed()
+        }
+    }
+    Connections {
+        target: navBar.buttonGroupSettings
         function onChanged(number: int){
             buttonGroupFunction = number
             changed()

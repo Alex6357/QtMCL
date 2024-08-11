@@ -13,6 +13,11 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     configure_file(src/natives/Windows/info.rc.in outfiles/info.rc)
     set(WINDOWS_SOURCES
         ${CMAKE_BINARY_DIR}/outfiles/info.rc
+        src/natives/Windows/memory_info.cpp
+    )
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    set(LINUX_SOURCES
+        src/natives/Linux/memory_info.cpp
     )
 endif()
 
@@ -24,6 +29,9 @@ set(MAIN_SOURCES
     src/config.cpp
     ${CMAKE_BINARY_DIR}/outfiles/version.h
     ${WINDOWS_SOURCES}
+    ${LINUX_SOURCES}
+    ${FREEBSD_SOURCES}
+    ${MACOS_SOURCES}
 )
 
 set(GAME_SOURCES
@@ -67,6 +75,7 @@ set(QML_SOURCES
     src/ui/NavBarButtonGroups/ButtonGroupSettings.qml
     src/ui/NavBarButtonGroups/ButtonGroupAbout.qml
     src/ui/ContentAreaPages/LaunchPages/PageLaunch.qml
+    src/ui/ContentAreaPages/SettingsPages/PageGameSettings.qml
 )
 
 set(RESOURCES

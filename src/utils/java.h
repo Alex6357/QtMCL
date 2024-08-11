@@ -63,6 +63,8 @@ private:
     const QString detailVersion;
     // java 名称
     const QString name;
+    // 是否正在扫描 java
+    static bool scanning;
 public:
     // 默认构造函数
     Java(const enum javaType type, const enum QuickMCL::config::arch arch, const QString& path, const int version, const QString& detailVersion, const QString& name);
@@ -85,12 +87,17 @@ public:
 
     // 扫描 java
     static void scanJava();
+    // 是否正在扫描 java
+    static bool isScanning() {return scanning;};
     // 以 java.exe 的路径注册 java
     static void registerJavaByPath(const QString& path);
+    // 用 java.exe 的路径获取 java 指针
+    static const Java* const getJavaPtrByPath(const QString& path);
     // 获取 javaList 指针
-    static QList<const Java*>* getJavaListPtr();
+    static QMap<QString, const Java*>* getJavaListPtr();
 };
-typedef QList<const Java*> JavaList;
+// typedef QList<const Java*> JavaList;
+typedef QMap<QString, const Java*> JavaMap;
 }
 
 #endif // JAVA_H

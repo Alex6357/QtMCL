@@ -58,6 +58,7 @@ ComboBox {
             color: "transparent"
 
             Text {
+                width: parent.width - 20
                 text: controlDelegate.model[control.textRole]
                 color: "#21be2b"
                 font: control.font
@@ -149,11 +150,12 @@ ComboBox {
     contentItem: TextField {
         enabled: control.editable
         leftPadding: 10
-        rightPadding: /*parent.indicator.width + parent.spacing*/20
-        // width: parent.width - 50
+        rightPadding: /*parent.indicator.width + parent.spacing*/10
+        width: parent.width - 20
         text: control.displayText
         font: control.font
         color: /*control.pressed ? "#17a81a" : */"#21be2b"
+        autoScroll: false
         verticalAlignment: Text.AlignVCenter
         // elide: Text.ElideRight
 

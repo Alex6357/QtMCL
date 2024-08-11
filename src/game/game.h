@@ -68,7 +68,7 @@ private:
     // 游戏名称
     QString name = "DefaultConfig";
     // java 版本
-    const QuickMCL::utils::Java* java = nullptr;
+    QString javaPath;
     // 游戏目录位置
     bool seperate = true;
     // 最小内存大小，单位 MB
@@ -120,11 +120,13 @@ public:
     void setName(const QString& name);
 
     // 获取游戏 java
-    const QuickMCL::utils::Java* getJava() const {return this->java;};
+    const QuickMCL::utils::Java* getJava() const;
     // 设置游戏 java
     void setJava(const QuickMCL::utils::Java* java);
     // 获取 java 路径
-    const QString getJavaPath() const;
+    const QString getJavaPath() const {return this->javaPath;};
+    // 设置 java 路径
+    void setJavaPath(const QString& path);
 
     // 是否版本隔离
     const bool isSeperate() const {return this->seperate;};

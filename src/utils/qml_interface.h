@@ -23,6 +23,23 @@ public:
     Q_INVOKABLE static void addUserToList(const QString& user);
     // 获取 gameList
     Q_INVOKABLE static const QStringList getGameList();
+    // 获取 javaList
+    Q_INVOKABLE static const QStringList getJavaList(const QString& game = "");
+    // 用路径获取 java 的 index
+    Q_INVOKABLE static const int getJavaIndex(const QString& name = "");
+    // 设置 java
+    Q_INVOKABLE static void setJava(const QString& text, const QString& game = "");
+    // 获取版本隔离
+    Q_INVOKABLE static const bool getSeperate(const QString& gameName = "");
+    // 设置版本隔离
+    Q_INVOKABLE static void setSeperate(const bool seperate, const QString& gameName = "");
+    // 获取内存大小
+    Q_INVOKABLE static const unsigned int getMemory(const QString& gameName = "");
+    // 设置内存大小
+    Q_INVOKABLE static void setMemory(const unsigned int memoryMiB, const QString& gameName = "");
+
+    // 获取总内存大小
+    Q_INVOKABLE static const unsigned int getTotalMemoryMiB();
 signals:
 };
 }

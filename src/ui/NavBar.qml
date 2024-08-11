@@ -50,7 +50,7 @@ Rectangle {
     // 导出按钮组，让内容区能接收到信号
     property alias buttonGroupLaunch: buttonGroupLaunch
     property alias buttonGroupDownload: buttonGroupDownload
-    // property alias buttonGroupSettings: buttonGroupSettings
+    property alias buttonGroupSettings: buttonGroupSettings
     // property alias buttonGroupAbout: buttonGroupAbout
 
     // 拖动区及拖动代码
@@ -140,8 +140,10 @@ Rectangle {
         }
 
         // 全局设置功能按钮组
-        // ButtonGroupSettings {
-        // }
+        ButtonGroupSettings {
+            id: buttonGroupSettings
+            anchors.fill: parent
+        }
 
         // 更多信息功能按钮组
         // ButtonGroupAbout {

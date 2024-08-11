@@ -42,8 +42,10 @@
 #include "../config.h"
 #include "utils.h"
 
+bool QuickMCL::utils::Java::scanning = false;
+
 namespace QuickMCL::utils {
-Q_GLOBAL_STATIC(JavaList, javaList);
+Q_GLOBAL_STATIC(JavaMap, javaList);
 Q_GLOBAL_STATIC(const QStringList, javaDirs, {"Java/", "Eclipse Adoptium/", "Amazon Corretto/", "Microsoft/", "Zulu/", "OpenLogic/"});
 }
 
@@ -75,6 +77,7 @@ const bool QuickMCL::utils::Java::isJdk() const {
 
 // 扫描 java
 void QuickMCL::utils::Java::scanJava(){
+    scanning = true;
     if (QuickMCL::config::Config::getGlobalConfigPtr()->getSystem() == QuickMCL::config::system::windows){
         for (const QFileInfo& drive : QDir::drives()){
             for (const QString& programFiles : {"Program Files/", "Program Files (x86)/"}){
@@ -98,6 +101,7 @@ void QuickMCL::utils::Java::scanJava(){
             }
         }
     }
+    scanning = false;
 }
 
 // 以 java.exe 的路径注册 java
@@ -173,7 +177,7 @@ void QuickMCL::utils::Java::registerJavaByPath(const QString& path){
         if(arch == QuickMCL::config::arch::x86){
             name.append(" (32-bit)");
         }
-        javaList->append(new Java(type, arch, path, version.toInt(), detailVersion, name));
+        javaList->insert(path, new Java(type, arch, path, version.toInt(), detailVersion, name));
         qDebug() << "[QuickMCL::utils::Java] 注册 Java:";
         qDebug() << "[QuickMCL::utils::Java] type:           " << type;
         qDebug() << "[QuickMCL::utils::Java] arch:           " << arch;
@@ -184,7 +188,15 @@ void QuickMCL::utils::Java::registerJavaByPath(const QString& path){
     }
 }
 
+// 用 java.exe 的路径获取 java 指针
+const QuickMCL::utils::Java* const QuickMCL::utils::Java::getJavaPtrByPath(const QString& path){
+    if (javaList->contains(path)){
+        return javaList->value(path);
+    }
+    return nullptr;
+}
+
 // 获取 javaList 指针
-QuickMCL::utils::JavaList* QuickMCL::utils::Java::getJavaListPtr(){
+QuickMCL::utils::JavaMap* QuickMCL::utils::Java::getJavaListPtr(){
     return javaList;
 }

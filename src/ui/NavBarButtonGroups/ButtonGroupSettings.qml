@@ -30,159 +30,110 @@
  */
 
 /*
- * 这是启动游戏功能的导航栏按钮组。
+ * 这是全局设置功能的导航栏按钮组。
  */
 
 import QtQuick
+import "../QuickMCLComponents"
 import ".."
 
-// 启动游戏导航栏按钮组
+// 全局设置导航栏按钮组
 Rectangle {
-    id: buttonGroupLaunch
+    id: buttonGroupSettings
     width: 500
     height: parent.height
     color: "transparent"
     anchors.centerIn: parent
+    // 默认不可见
+    visible: false
     // 连接功能栏信号
     Component.onCompleted: {
         funcBar.changed.connect(checkFunction)
     }
     function checkFunction(number: int){
-        if(number === FuncBar.FunctionTypes.Launch){
+        if(number === FuncBar.FunctionTypes.Settings){
+            visible = true
             // 避免背景方块不在默认选项时播放动画
             backgroundRectangleAnimation.duration = 0
-            launch()
+            // 回到默认项
+            gameSettings()
             backgroundRectangleAnimation.duration = 250
 
             inAnimation.start()
-        } else {
+            activated = true
+        } else if(activated) {
             outAnimation.start()
-
+            activated = false
         }
     }
 
     // 功能枚举类
-    enum LaunchFunctions {
-        Launch,
-        Settings,
-        Mods,
-        Install
+    enum SettingsFunctions {
+        GameSettings,
+        LauncherSettings
     }
 
     // 存储功能变量
-    property int launchFunction: ButtonGroupLaunch.LaunchFunctions.Launch
+    property int settingsFunction: ButtonGroupSettings.SettingsFunctions.GameSettings
+
+    // 默认激活
+    property bool activated: true
 
     // 功能信号
-    signal launch()
-    signal settings()
-    signal mods()
-    signal install()
+    signal gameSettings()
+    signal launcherSettings()
     // 统一用 changed 信号通知按钮
     signal changed(number: int)
 
-    onLaunch: {
-        launchFunction = ButtonGroupLaunch.LaunchFunctions.Launch
-        changed(ButtonGroupLaunch.LaunchFunctions.Launch)
+    onGameSettings: {
+        settingsFunction = ButtonGroupSettings.SettingsFunctions.GameSettings
+        changed(ButtonGroupSettings.SettingsFunctions.GameSettings)
     }
-    onSettings: {
-        launchFunction = ButtonGroupLaunch.LaunchFunctions.Settings
-        changed(ButtonGroupLaunch.LaunchFunctions.Settings)
-    }
-    onMods: {
-        launchFunction = ButtonGroupLaunch.LaunchFunctions.Mods
-        changed(ButtonGroupLaunch.LaunchFunctions.Mods)
-    }
-    onInstall: {
-        launchFunction = ButtonGroupLaunch.LaunchFunctions.Install
-        changed(ButtonGroupLaunch.LaunchFunctions.Install)
+    onLauncherSettings: {
+        settingsFunction = ButtonGroupSettings.SettingsFunctions.LauncherSettings
+        changed(ButtonGroupSettings.SettingsFunctions.LauncherSettings)
     }
 
     // 按钮默认值
     property int buttonWidth: 80
     property int buttonHeight: 30
-    property int buttonRadius: 5
     property int margin: 10
 
     // 进入动画组
     ParallelAnimation {
         id: inAnimation
         onStarted: visible = true
-        // onStarted: {
-        //     backgroundRectangle.anchors.verticalCenterOffset = -30
-        //     visible = true
 
-        // 第一个，启动按钮，总和背景矩形一起进入
+        // 第一个，全局游戏设置按钮，总和背景矩形一起进入
         ParallelAnimation {
             PropertyAnimation {
-                targets: [backgroundRectangle, launchButton]
+                targets: [backgroundRectangle, gameSettingsButton]
                 property: "anchors.verticalCenterOffset"
                 from: -30
                 to: 0
             }
             PropertyAnimation {
-                targets: [backgroundRectangle, launchButton]
+                targets: [backgroundRectangle, gameSettingsButton]
                 property: "opacity"
                 from: 0
                 to: 1
             }
         }
 
-        // 第二个，游戏设置按钮，延迟 70
+        // 第二个，启动器设置按钮，延迟 70
         SequentialAnimation {
             PauseAnimation {
                 duration: 70
             }
             ParallelAnimation {
                 PropertyAnimation {
-                    target: settingsButton
+                    target: launcherSettingsButton
                     property: "anchors.verticalCenterOffset"
                     from: -30
                     to: 0
                 }
                 PropertyAnimation {
-                    target: settingsButton
-                    property: "opacity"
-                    from: 0
-                    to: 1
-                }
-            }
-        }
-
-        // 第三个，MOD 管理按钮，延迟 140
-        SequentialAnimation {
-            PauseAnimation {
-                duration: 140
-            }
-            ParallelAnimation {
-                PropertyAnimation {
-                    target: modsButton
-                    property: "anchors.verticalCenterOffset"
-                    from: -30
-                    to: 0
-                }
-                PropertyAnimation {
-                    target: modsButton
-                    property: "opacity"
-                    from: 0
-                    to: 1
-                }
-            }
-        }
-
-        // 第四个，自动安装按钮，延迟 210
-        SequentialAnimation {
-            PauseAnimation {
-                duration: 210
-            }
-            ParallelAnimation {
-                PropertyAnimation {
-                    target: installButton
-                    property: "anchors.verticalCenterOffset"
-                    from: -30
-                    to: 0
-                }
-                PropertyAnimation {
-                    target: installButton
+                    target: launcherSettingsButton
                     property: "opacity"
                     from: 0
                     to: 1
@@ -206,7 +157,7 @@ Rectangle {
         // 背景矩形，与激活的按钮延迟相同
         SequentialAnimation {
             PauseAnimation {
-                duration: buttonGroupLaunch.launchFunction * 70
+                duration: buttonGroupSettings.settingsFunction * 70
             }
             ParallelAnimation {
                 PropertyAnimation {
@@ -224,78 +175,36 @@ Rectangle {
             }
         }
 
-        // 第一个，启动按钮，无延迟
+        // 第一个，全局游戏设置按钮，无延迟
         ParallelAnimation {
             PropertyAnimation {
-                target: launchButton
+                target: gameSettingsButton
                 property: "anchors.verticalCenterOffset"
                 from: 0
                 to: 30
             }
             PropertyAnimation {
-                targets: launchButton
+                targets: gameSettingsButton
                 property: "opacity"
                 from: 1
                 to: 0
             }
         }
 
-        // 第二个，游戏设置按钮，延迟 70
+        // 第二个，启动器设置按钮，延迟 70
         SequentialAnimation {
             PauseAnimation {
                 duration: 70
             }
             ParallelAnimation {
                 PropertyAnimation {
-                    target: settingsButton
+                    target: launcherSettingsButton
                     property: "anchors.verticalCenterOffset"
                     from: 0
                     to: 30
                 }
                 PropertyAnimation {
-                    target: settingsButton
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                }
-            }
-        }
-
-        // 第三个，MOD 管理按钮，延迟140
-        SequentialAnimation {
-            PauseAnimation {
-                duration: 140
-            }
-            ParallelAnimation {
-                PropertyAnimation {
-                    target: modsButton
-                    property: "anchors.verticalCenterOffset"
-                    from: 0
-                    to: 30
-                }
-                PropertyAnimation {
-                    target: modsButton
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                }
-            }
-        }
-
-        // 第四个，自动安装按钮，延迟 210
-        SequentialAnimation {
-            PauseAnimation {
-                duration: 210
-            }
-            ParallelAnimation {
-                PropertyAnimation {
-                    target: installButton
-                    property: "anchors.verticalCenterOffset"
-                    from: 0
-                    to: 30
-                }
-                PropertyAnimation {
-                    target: installButton
+                    target: launcherSettingsButton
                     property: "opacity"
                     from: 1
                     to: 0
@@ -307,24 +216,21 @@ Rectangle {
     // 按钮背景矩形
     Rectangle {
         id: backgroundRectangle
-        x: launchButton.x
+        x: gameSettingsButton.x
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
+        radius: 5
         color: "white"
+        opacity: 0
         anchors.verticalCenter: parent.verticalCenter
         // 连接 changed 信号
         Component.onCompleted: parent.changed.connect(movetoActivate)
         // 移动到激活的按钮
         function movetoActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Launch){
-                x = launchButton.x
-            } else if(number === ButtonGroupLaunch.LaunchFunctions.Settings){
-                x = settingsButton.x
-            } else if(number === ButtonGroupLaunch.LaunchFunctions.Mods){
-                x = modsButton.x
+            if(number === ButtonGroupSettings.SettingsFunctions.GameSettings){
+                x = gameSettingsButton.x
             } else {
-                x = installButton.x
+                x = launcherSettingsButton.x
             }
         }
 
@@ -337,16 +243,17 @@ Rectangle {
         }
     }// 按钮背景矩形
 
-    // 启动按钮
-    Rectangle {
-        id: launchButton
+    // 全局游戏设置按钮
+    QuickMCLButton {
+        id: gameSettingsButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
-        anchors.right: settingsButton.left
-        anchors.rightMargin: parent.margin
+        anchors.right: parent.horizontalCenter
+        anchors.rightMargin: parent.margin / 2
         color: "transparent"
+        border.width: 0
+        opacity: 0
 
         // 默认激活
         property bool buttonActivated: true
@@ -355,252 +262,62 @@ Rectangle {
         Component.onCompleted: parent.changed.connect(checkActivate)
         // 检查是否为激活
         function checkActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Launch){
+            if(number === ButtonGroupSettings.SettingsFunctions.GameSettings){
                 buttonActivated = true
-                launchButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                launchButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("游戏设置")
+        text.color: "#00b057"
+        text.font.pixelSize: 14
 
-        // 启动按钮文字
-        Text {
-            id: launchButtonText
-            anchors.fill: parent
-            text: qsTr("启动")
-            color: "#00b057"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
+        mouseArea.onEntered: if(!gameSettingsButton.buttonActivated) gameSettingsButton.color.a = 0.17
+        mouseArea.onExited: if(!gameSettingsButton.buttonActivated) gameSettingsButton.color.a = 0
+        mouseArea.onPressed: if(!gameSettingsButton.buttonActivated) gameSettingsButton.color.a = 0.4
+        mouseArea.onClicked: if(!gameSettingsButton.buttonActivated) gameSettings()
+    }
 
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-
-                }
-            }
-        }
-
-        // 启动按钮鼠标区
-        MouseArea {
-            id: launchButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) launch()
-        }
-    }// 启动按钮
-
-    // 游戏设置按钮
-    Rectangle {
-        id: settingsButton
+    // 启动器设置按钮
+    QuickMCLButton {
+        id: launcherSettingsButton
         width: parent.buttonWidth
         height: parent.buttonHeight
-        radius: parent.buttonRadius
         anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.horizontalCenter
-        anchors.rightMargin: - parent.margin / 2
-        color: "transparent"
-
-        // 默认不激活
-        property bool buttonActivated: false
-
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Settings){
-                buttonActivated = true
-                settingsButtonText.color = "#00b057"
-                color.a = 0
-            } else {
-                settingsButtonText.color = "white"
-                buttonActivated = false
-            }
-        }
-
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
-
-        // 游戏设置按钮文字
-        Text {
-            id: settingsButtonText
-            anchors.fill: parent
-            text: qsTr("游戏设置")
-            color: "white"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-                }
-            }
-        }
-
-        // Mods 按钮鼠标区
-        MouseArea {
-            id: settingsButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) settings()
-        }
-    }// 游戏设置按钮
-
-    // MOD 管理按钮
-    Rectangle {
-        id: modsButton
-        width: parent.buttonWidth
-        height: parent.buttonHeight
-        radius: parent.buttonRadius
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: settingsButton.right
+        anchors.left: gameSettingsButton.right
         anchors.leftMargin: parent.margin
         color: "transparent"
+        border.width: 0
+        opacity: 0
 
-        // 默认不激活
+        // 默认激活
         property bool buttonActivated: false
 
         // 连接 changed 信号
         Component.onCompleted: parent.changed.connect(checkActivate)
         // 检查是否为激活
         function checkActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Mods){
+            if(number === ButtonGroupSettings.SettingsFunctions.LauncherSettings){
                 buttonActivated = true
-                modsButtonText.color = "#00b057"
+                text.color = "#00b057"
                 color.a = 0
             } else {
-                modsButtonText.color = "white"
+                text.color = "white"
                 buttonActivated = false
             }
         }
 
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
+        text.text: qsTr("启动器设置")
+        text.color: "white"
+        text.font.pixelSize: 14
 
-        // MOD 管理按钮文字
-        Text {
-            id: modsButtonText
-            anchors.fill: parent
-            text: qsTr("MOD 管理")
-            color: "white"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-
-                }
-            }
-        }
-
-        // MOD 管理按钮鼠标区
-        MouseArea {
-            id: modsButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) mods()
-        }
-    }// MOD 管理按钮
-
-    // 自动安装按钮
-    Rectangle {
-        id: installButton
-        width: parent.buttonWidth
-        height: parent.buttonHeight
-        radius: parent.buttonRadius
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: modsButton.right
-        anchors.leftMargin: parent.margin
-        color: "transparent"
-
-        // 默认不激活
-        property bool buttonActivated: false
-
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Install){
-                buttonActivated = true
-                installButtonText.color = "#00b057"
-                color.a = 0
-            } else {
-                installButtonText.color = "white"
-                buttonActivated = false
-            }
-        }
-
-        // 设置按钮背景透明度动画
-        Behavior on color.a {
-            PropertyAnimation {
-                duration: 150
-            }
-        }
-
-        // 自动安装按钮文字
-        Text {
-            id: installButtonText
-            anchors.fill: parent
-            text: qsTr("自动安装")
-            color: "white"
-            font.family: "Microsoft YaHei"
-            font.pixelSize: 14
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            // 设置文字颜色渐变动画
-            Behavior on color {
-                PropertyAnimation {
-
-                }
-            }
-        }
-
-        // 自动安装按钮鼠标区
-        MouseArea {
-            id: installButtonMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            // 完全用透明度改变颜色
-            onEntered: if(!parent.buttonActivated) parent.color.a = 0.17
-            onExited: if(!parent.buttonActivated) parent.color.a = 0
-            onPressed: if(!parent.buttonActivated) parent.color.a = 0.4
-            onClicked: if(!parent.buttonActivated) install()
-        }
-    }// 自动安装按钮
+        mouseArea.onEntered: if(!launcherSettingsButton.buttonActivated) launcherSettingsButton.color.a = 0.17
+        mouseArea.onExited: if(!launcherSettingsButton.buttonActivated) launcherSettingsButton.color.a = 0
+        mouseArea.onPressed: if(!launcherSettingsButton.buttonActivated) launcherSettingsButton.color.a = 0.4
+        mouseArea.onClicked: if(!launcherSettingsButton.buttonActivated) launcherSettings()
+    }
 }// 启动游戏导航栏按钮组

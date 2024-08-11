@@ -30,33 +30,17 @@
  */
 
 /*
- * 工具集合
+ * Windows 下获取内存大小
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#include <windows.h>
+#include "../../utils/utils.h"
 
-#include <QString>
-#include "../config.h"
+// Windows 下获取内存大小
+const unsigned int QuickMCL::utils::getTotalMemoryMiB(){
+    MEMORYSTATUSEX memInfo;
+    memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+    GlobalMemoryStatusEx(&memInfo);
 
-namespace QuickMCL::utils {
-// 用双引号包裹字符串
-const QString warpInQuotationMarks(const QString& string);
-
-// 获取系统类型
-const enum QuickMCL::config::system getSystemType();
-// 获取系统架构
-const enum QuickMCL::config::arch getArch();
-// 获取系统名称
-const QString getSystemName();
-// 获取系统版本号
-const QString getSystemVersion();
-
-// 建立文件
-const bool makeFile(const QString& file);
-
-// 获取总物理内存大小
-const unsigned int getTotalMemoryMiB();
+    return memInfo.ullTotalPhys / (1024 * 1024);
 }
-
-#endif // UTILS_H
