@@ -51,6 +51,11 @@ Rectangle {
         Online = 1
     }
 
+    MouseArea {
+        anchors.fill: parent
+        onClicked: choosePlayer.focus = false
+    }
+
     // 中间的内容区
     Rectangle {
         id: contentArea
@@ -266,14 +271,23 @@ Rectangle {
 
             property var models: Interface.getUserList()
 
+            validator: RegularExpressionValidator {
+                regularExpression: /\S+/
+            }
+
             onAccepted: {
-                var text = editText
-                if(find(text) === -1){
-                    Interface.addUserToList(text)
-                    models = Interface.getUserList()
-                    currentIndex = find(text)
-                }
                 focus = false
+            }
+
+            onFocusChanged: {
+                if (!focus && acceptableInput){
+                    var text = editText
+                    if(find(text) === -1 && text !== ""){
+                        Interface.addUserToList(text)
+                        models = Interface.getUserList()
+                        currentIndex = find(text)
+                    }
+                }
             }
         }
 
@@ -333,6 +347,7 @@ Rectangle {
                 // launcher.launch("")
                 // console.debug(game.qmlGetGameList());
                 // launcher.launch(chooseVersion.currentText)
+                choosePlayer.focus = false
                 console.debug(choosePlayer.currentText + " " + chooseVersion.currentText)
                 // launcher.launch(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
                 Interface.launchGame(chooseVersion.currentText, choosePlayer.currentText/*, loginSwitch.loginType*/)
