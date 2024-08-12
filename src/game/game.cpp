@@ -143,7 +143,9 @@ void QuickMCL::game::Game::setFeatures(const QStringList& features){
 
 // 添加启动功能模式
 void QuickMCL::game::Game::addFeature(const QString& feature){
-    this->features.append(feature);
+    if (!this->features.contains(feature)){
+        this->features.append(feature);
+    }
 }
 
 // 设置分辨率宽度
