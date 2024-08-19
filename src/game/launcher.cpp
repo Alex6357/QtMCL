@@ -41,7 +41,7 @@
 #include <QDebug>
 #include "game.h"
 #include "launcher.h"
-#include "version.h"
+#include "../version.h"
 #include "../config.h"
 #include "../utils/json_parser.h"
 
