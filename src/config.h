@@ -36,6 +36,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// 取消定义 linux，防止跟枚举量中的 linux 冲突
+#undef linux
+
 // #include <QJsonDocument>
 #include <QJsonArray>
 #include <QDir>
