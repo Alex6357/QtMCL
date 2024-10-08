@@ -349,7 +349,7 @@ Rectangle {
         mouseArea.onEntered: if(!modsButton.buttonActivated) modsButton.color.a = 0.17
         mouseArea.onExited: if(!modsButton.buttonActivated) modsButton.color.a = 0
         mouseArea.onPressed: if(!modsButton.buttonActivated) modsButton.color.a = 0.4
-        mouseArea.onClicked: if(!modsButton.buttonActivated) buttonGroupDownload.downloadFunction === ButtonGroupDownload.DownloadFunctions.Mods
+        mouseArea.onClicked: if(!modsButton.buttonActivated) buttonGroupDownload.downloadFunction = ButtonGroupDownload.DownloadFunctions.Mods
     }
 
     // 整合包按钮
