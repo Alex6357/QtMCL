@@ -30,7 +30,7 @@
  */
 
 /*
- * 这是“全局设置”中的“游戏设置”页面。
+ * 这是“启动游戏”中的“游戏设置”页面。
  */
 
 import QtQuick
@@ -43,6 +43,7 @@ Rectangle {
     id: pageGameSettings
     color: "transparent"
     bottomRightRadius: 5
+    property string game: Interface.getCurrentGame()
 
     // 中间的内容区
     ScrollView {
@@ -66,7 +67,7 @@ Rectangle {
         Rectangle {
             id: basicConfig
             width: pageGameSettings.width - 50
-            height: 210
+            height: 250
             color: "white"
             radius: 5
             border.color: "#21be2b"
@@ -90,6 +91,44 @@ Rectangle {
                 anchors.top: parent.top
             }
 
+            // 使用全局设置文字
+            Text {
+                id: useGlobalBasicText
+                height: 30
+                width: 120
+                text: qsTr("使用全局设置")
+                color: "#21be2b"
+                font.pixelSize: 14
+                font.family: "Microsoft YaHei"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.topMargin: 40
+            }
+
+            // 使用全局设置选择下拉框
+            QuickMCLComboBox {
+                id: useGlobalBasicComboBox
+                width: parent.width - useGlobalBasicText.width - 25
+                height: 30
+                anchors.verticalCenter: useGlobalBasicText.verticalCenter
+                anchors.left: useGlobalBasicText.right
+                enabled: pageGameSettings.game !== ""
+                num: 2
+
+                model: [qsTr("是"), qsTr("否")]
+
+                function setUseGlobalBasic(){
+                    Interface.setUseGlobalBasic(currentIndex === 0 ? true : false, Interface.getCurrentGame())
+                }
+
+                Component.onCompleted: {
+                    currentIndex = Interface.getUseGlobalBasic(Interface.getCurrentGame()) ? 0 : 1
+                    currentIndexChanged.connect(setUseGlobalBasic)
+                }
+            }
+
             // java 文字
             Text {
                 id: javaText
@@ -102,16 +141,18 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.topMargin: 40
+                anchors.top: useGlobalBasicText.bottom
+                anchors.topMargin: 10
             }
 
             // java选择下拉框
             QuickMCLComboBox {
+                id: javaComboBox
                 width: parent.width - javaText.width - 25
                 height: 30
                 anchors.verticalCenter: javaText.verticalCenter
                 anchors.left: javaText.right
+                enabled: useGlobalBasicComboBox.currentIndex === 1 && pageGameSettings.game !== ""
                 num: 9
 
                 model: Interface.getJavaList()
@@ -144,10 +185,12 @@ Rectangle {
 
             // 版本隔离下拉框
             QuickMCLComboBox {
+                id: seperateComboBox
                 width: parent.width - seperateText.width - 25
                 height: 30
                 anchors.verticalCenter: seperateText.verticalCenter
                 anchors.left: seperateText.right
+                enabled: useGlobalBasicComboBox.currentIndex === 1 && pageGameSettings.game !== ""
                 num: 2
 
                 model: ["开启", "关闭"]
@@ -194,6 +237,7 @@ Rectangle {
                 height: 30
                 anchors.verticalCenter: memoryText.verticalCenter
                 anchors.left: memoryText.right
+                enabled: useGlobalBasicComboBox.currentIndex === 1 && pageGameSettings.game !== ""
                 from: 256
                 to: Interface.getTotalMemoryMiB()
                 value: Interface.getMemory()
@@ -259,6 +303,7 @@ Rectangle {
                 radius: 5
                 border.color: "#21be2b"
                 border.width: 1
+                color: memorySizeText.enabled ? "transparent" : "#dddedf"
 
                 // 内存数值的数字
                 TextField {
@@ -288,6 +333,7 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: memorySizeTextMib.left
+                    enabled: useGlobalBasicComboBox.currentIndex === 1 && pageGameSettings.game !== ""
 
                     onAccepted: {
                         memorySlider.value = Number(text)
@@ -347,6 +393,7 @@ Rectangle {
                 height: 30
                 anchors.verticalCenter: windowSizeText.verticalCenter
                 anchors.left: windowSizeText.right
+                enabled: useGlobalBasicComboBox.currentIndex === 1 && pageGameSettings.game !== ""
                 num: 2
 
                 model: ["默认", "自定义"]
@@ -389,9 +436,9 @@ Rectangle {
                     rightInset: 0
                     leftPadding: 0
                     rightPadding: 0
-                    enabled: windowSizeComboBox.currentIndex === 1
+                    enabled: windowSizeComboBox.currentIndex === 1 && useGlobalBasicComboBox.currentIndex === 1 && pageGameSettings.game !== ""
                     background: Rectangle {
-                        color: windowSizeComboBox.currentIndex === 1 ? "transparent" : "#dddedf"
+                        color: windowSizeWidth.enabled ? "transparent" : "#dddedf"
                         radius: 5
                         border.color: "#21be2b"
                         border.width: 1
@@ -428,9 +475,9 @@ Rectangle {
                     rightInset: 0
                     leftPadding: 0
                     rightPadding: 0
-                    enabled: windowSizeComboBox.currentIndex === 1
+                    enabled: windowSizeComboBox.currentIndex === 1 && useGlobalBasicComboBox.currentIndex === 1 && pageGameSettings.game !== ""
                     background: Rectangle {
-                        color: windowSizeComboBox.currentIndex === 1 ? "transparent" : "#dddedf"
+                        color: windowSizeHeight.enabled ? "transparent" : "#dddedf"
                         radius: 5
                         border.color: "#21be2b"
                         border.width: 1
@@ -477,7 +524,7 @@ Rectangle {
         Rectangle {
             id: advancedConfig
             width: pageGameSettings.width - 50
-            height: 200
+            height: 240
             color: "white"
             radius: 5
             border.color: "#21be2b"
@@ -501,6 +548,44 @@ Rectangle {
                 anchors.top: parent.top
             }
 
+            // 使用全局高级设置文字
+            Text {
+                id: useGlobalAdvanceText
+                height: 30
+                width: 120
+                text: qsTr("使用全局设置")
+                color: "#21be2b"
+                font.pixelSize: 14
+                font.family: "Microsoft YaHei"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.topMargin: 40
+            }
+
+            // 使用全局设置选择下拉框
+            QuickMCLComboBox {
+                id: useGlobalAdvanceComboBox
+                width: parent.width - useGlobalAdvanceText.width - 25
+                height: 30
+                anchors.verticalCenter: useGlobalAdvanceText.verticalCenter
+                anchors.left: useGlobalAdvanceText.right
+                enabled: pageGameSettings.game !== ""
+                num: 2
+
+                model: [qsTr("是"), qsTr("否")]
+
+                function setUseGlobalAdvance(){
+                    Interface.setUseGlobalAdvance(currentIndex === 0 ? true : false, Interface.getCurrentGame())
+                }
+
+                Component.onCompleted: {
+                    currentIndex = Interface.getUseGlobalAdvance(Interface.getCurrentGame()) ? 0 : 1
+                    currentIndexChanged.connect(setUseGlobalAdvance)
+                }
+            }
+
             // jvm 参数文字
             Text {
                 id: jvmParametersText
@@ -522,21 +607,23 @@ Rectangle {
                 id: jvmParametersEdit
                 height: 100
                 width: parent.width - jvmParametersText.width - 25
-                anchors.top: parent.top
-                anchors.topMargin: 40
+                anchors.top: useGlobalAdvanceText.bottom
+                anchors.topMargin: 10
                 anchors.left: jvmParametersText.right
-                color: "white"
-                radius: 5
-                border.color: "#21be2b"
-                border.width: 1
+                color: "transparent"
+
                 ScrollView {
                     anchors.fill: parent
                     TextArea {
                         id: jvmParametersTextEdit
                         height: 100
                         width: parent.width - jvmParametersText.width - 25
+                        enabled: useGlobalAdvanceComboBox.currentIndex === 1 && pageGameSettings.game !== ""
                         background: Rectangle {
-                            color: "transparent"
+                            radius: 5
+                            color: jvmParametersTextEdit.enabled ? "transparent" : "#dddedf"
+                            border.color: "#21be2b"
+                            border.width: 1
                         }
                         font.family: "Microsoft YaHei"
                         text: Interface.getJvmParameters()
@@ -569,6 +656,7 @@ Rectangle {
                 height: 30
                 anchors.verticalCenter: demoText.verticalCenter
                 anchors.left: demoText.right
+                enabled: useGlobalAdvanceComboBox.currentIndex === 1 && pageGameSettings.game !== ""
                 num: 2
                 isDown: false
 

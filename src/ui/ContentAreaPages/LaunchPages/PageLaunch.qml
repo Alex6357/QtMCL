@@ -34,8 +34,6 @@
  */
 
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Controls.Basic
 import QtQuick.Effects
 import "../../QuickMCLComponents"
 
@@ -58,7 +56,7 @@ Rectangle {
 
     // 中间的内容区
     Rectangle {
-        id: contentArea
+        id: pageLaunchArea
         width: 646
         height: 405
         color: "transparent"
@@ -229,6 +227,9 @@ Rectangle {
             model: Interface.getGameList()
             num: 8
             isDown: false
+            onCurrentTextChanged: {
+                Interface.setCurrentGame(chooseVersion.currentText)
+            }
         }
 
         // 头像阴影

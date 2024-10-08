@@ -150,6 +150,11 @@ void QuickMCL::config::Config::setTempDir(const QString tempDir){
     this->tempDir = tempDir;
 }
 
+// 设置上次游戏名称
+void QuickMCL::config::Config::setLastGame(const QString lastGame){
+    this->lastGame = lastGame;
+}
+
 // 自动寻找并读取配置文件
 void QuickMCL::config::Config::readConfig(){
     qDebug() << "[QuickMCL::config::Config::readConfig] 正在读取配置文件：";

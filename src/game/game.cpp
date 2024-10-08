@@ -101,9 +101,6 @@ void QuickMCL::game::Game::setJava(const QuickMCL::utils::Java* java){
     } else {
         this->javaPath = java->getPath();
     }
-    if (!(this == globalGameConfig)){
-        writeGameConfig();
-    }
 }
 
 // 设置 java 路径
@@ -148,6 +145,13 @@ void QuickMCL::game::Game::addFeature(const QString& feature){
     }
 }
 
+// 删除启动功能模式
+void QuickMCL::game::Game::deleteFeature(const QString& feature){
+    if (this->features.contains(feature)){
+        this->features.remove(features.indexOf(feature));
+    }
+}
+
 // 设置分辨率宽度
 void QuickMCL::game::Game::setResolutionWidth(int width){
     this->resolutionWidth = width;
@@ -181,6 +185,16 @@ void QuickMCL::game::Game::setQuickPlayMultiPlayer(const QString& name){
 // 设置快速游戏多人模式 realms
 void QuickMCL::game::Game::setQuickPlayRealms(int realms){
     this->quickPlayRealms = realms;
+}
+
+// 设置是否使用全局基础设置
+void QuickMCL::game::Game::setUseGlobalBasic(bool useGlobalBasic){
+    this->useGlobalBasic = useGlobalBasic;
+}
+
+// 设置是否使用全局高级设置
+void QuickMCL::game::Game::setUseGlobalAdvance(bool useGlobalAdvance){
+    this->useGlobalAdvance = useGlobalAdvance;
 }
 
 // 从 jsonObject 读取游戏配置

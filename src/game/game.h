@@ -108,6 +108,10 @@ private:
     QString quickPlayMultiPlayer = "";
     // 快速游戏 realms
     int quickPlayRealms = 0;
+    // 是否使用全局基础设置
+    bool useGlobalBasic = true;
+    // 是否使用全局高级设置
+    bool useGlobalAdvance = true;
 public:
     // 默认构造函数
     Game();
@@ -156,6 +160,8 @@ public:
     void setFeatures(const QStringList& features);
     // 添加启动功能模式
     void addFeature(const QString& feature);
+    // 删除启动功能模式
+    void deleteFeature(const QString& feature);
 
     // 获取分辨率宽度
     const int getResolutionWidth() const {return this->resolutionWidth;};
@@ -191,6 +197,16 @@ public:
     const int getQuickPlayRealms() const {return this->quickPlayRealms;};
     // 设置快速游戏多人模式 realms
     void setQuickPlayRealms(int realms);
+
+    // 获取是否使用全局基础设置
+    const bool getUseGlobalBasic() const {return this->useGlobalBasic;};
+    // 设置是否使用全局基础设置
+    void setUseGlobalBasic(bool useGlobalBasic);
+
+    // 获取是否使用全局高级设置
+    const bool getUseGlobalAdvance() const {return this->useGlobalAdvance;};
+    // 设置是否使用全局高级设置
+    void setUseGlobalAdvance(bool useGlobalAdvance);
 
 
     // 从 jsonObject 读取游戏配置

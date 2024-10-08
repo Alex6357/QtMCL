@@ -89,9 +89,8 @@ enum arch {
     others = 3
 };
 
-class Config : public QObject
+class Config
 {
-    Q_OBJECT
 private:
     // 配置文件位置类型
     enum configDirPlace configDirPlace = configDirPlace::localConfigDir;
@@ -111,6 +110,8 @@ private:
     QString gameDir;
     // 临时文件位置
     QString tempDir = QDir::tempPath() + "/" + (QuickMCL::config::tempDir);
+    // 上次启动游戏名称
+    QString lastGame;
 public:
     // 默认构造函数
     explicit Config(QObject *parent = nullptr);
@@ -171,6 +172,10 @@ public:
     // 设置临时文件路径
     void setTempDir(const QString tempDir);
 
+    // 获取上次游戏名称
+    const QString getLastGame() const {return this->tempDir;};
+    // 设置上次游戏名称
+    void setLastGame(const QString lastGame);
 
     // 自动寻找并读取配置文件
     void readConfig();

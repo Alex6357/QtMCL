@@ -41,6 +41,7 @@ Rectangle {
     width: 540
     height: 405
     color: "#e9faf0"
+    id: contentArea
 
     // 保存当前功能
     property int funcBarFunction: FuncBar.FunctionTypes.Launch
@@ -57,8 +58,6 @@ Rectangle {
         width: parent.width
         height: parent.height
         anchors.fill: parent
-        anchors.top: parent.top
-        anchors.left: parent.left
         // 默认加载“启动游戏”的“启动”功能
         source: "ContentAreaPages/LaunchPages/PageLaunch.qml"
     }
@@ -73,6 +72,10 @@ Rectangle {
                     // 子功能为“启动”
                     case ButtonGroupLaunch.LaunchFunctions.Launch:
                         contentAreaLoader.source = "ContentAreaPages/LaunchPages/PageLaunch.qml"
+                        break
+                    // 子功能为“游戏设置”
+                    case ButtonGroupLaunch.LaunchFunctions.Settings:
+                        contentAreaLoader.source = "ContentAreaPages/LaunchPages/PageGameSettings.qml"
                         break
                     // fallback
                     default:

@@ -138,7 +138,7 @@ Window {
 
             // 内容区
             ContentArea {
-                id: contentArea
+                id: mainContentArea
                 width: parent.width - funcBar.width - funcBarShadow.width + 1
                 height: funcBar.height
                 anchors.left: funcBarShadow.right

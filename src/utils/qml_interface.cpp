@@ -33,7 +33,10 @@
  * Qml界面类，负责与 Qml 交互
  */
 
+#include <QtTypes>
+#include <QString>
 #include <QStringList>
+#include <QVariantList>
 #include <QDebug>
 #include "qml_interface.h"
 #include "../game/launcher.h"
@@ -52,9 +55,22 @@ QuickMCL::utils::QmlInterface::QmlInterface(QObject *parent)
     : QObject{parent}
 {}
 
+// 初始化当前游戏名称
+QString QuickMCL::utils::QmlInterface::currentGame = "";
+
 // 启动游戏
 const qint64 QuickMCL::utils::QmlInterface::launchGame(const QString& name, const QString& playerName, const int type){
     return QuickMCL::game::Launcher::launch(name, playerName, type);
+}
+
+// 获取现在的游戏名称
+const QString QuickMCL::utils::QmlInterface::getCurrentGame() {
+    return QuickMCL::utils::QmlInterface::currentGame;
+}
+
+// 设置现在的游戏名称
+void QuickMCL::utils::QmlInterface::setCurrentGame(const QString& gameName){
+    QuickMCL::utils::QmlInterface::currentGame = gameName;
 }
 
 // 获取 userList
@@ -145,6 +161,8 @@ void QuickMCL::utils::QmlInterface::setJava(const QString& text, const QString& 
     game->setJavaPath(java);
     if (gameName == ""){
         config::Config::getGlobalConfigPtr()->writeConfigToFile();
+    } else {
+        game::Game::writeGameConfig();
     }
 }
 
@@ -170,6 +188,8 @@ void QuickMCL::utils::QmlInterface::setSeperate(const bool seperate, const QStri
     game->setSeperate(seperate);
     if (gameName == ""){
         config::Config::getGlobalConfigPtr()->writeConfigToFile();
+    } else {
+        game::Game::writeGameConfig();
     }
 }
 
@@ -195,6 +215,166 @@ void QuickMCL::utils::QmlInterface::setMemory(const unsigned int memoryMiB, cons
     game->setMaximumMemory(memoryMiB);
     if (gameName == ""){
         config::Config::getGlobalConfigPtr()->writeConfigToFile();
+    } else {
+        game::Game::writeGameConfig();
+    }
+}
+
+// 获取是否自定义窗口大小
+const bool QuickMCL::utils::QmlInterface::hasResolutionFeature(const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    return game->getFeatures().contains("has_custom_resolution");
+}
+
+// 获取自定义窗口大小
+const QVariantList QuickMCL::utils::QmlInterface::getResolution(const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    QVariantList resolution;
+    resolution.append(game->getResolutionWidth());
+    resolution.append(game->getResolutionHeight());
+    return resolution;
+}
+
+// 设置自定义窗口大小
+void QuickMCL::utils::QmlInterface::setResolution(const int width, const int height, const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    if (width == -1 || height == -1){
+        game->deleteFeature("has_custom_resolution");
+    } else {
+        game->addFeature("has_custom_resolution");
+    }
+    if (gameName == ""){
+        config::Config::getGlobalConfigPtr()->writeConfigToFile();
+    } else {
+        game::Game::writeGameConfig();
+    }
+}
+
+// 获取 jvm 参数
+const QString QuickMCL::utils::QmlInterface::getJvmParameters(const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    return game->getJvmParameters().join('\n');
+}
+
+// 设置 jvm 参数
+void QuickMCL::utils::QmlInterface::setJvmParameters(const QString& parameters, const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    QStringList jvmParameters = parameters.split('\n');
+    game->setJvmParameters(jvmParameters);
+    if (gameName == ""){
+        config::Config::getGlobalConfigPtr()->writeConfigToFile();
+    } else {
+        game::Game::writeGameConfig();
+    }
+}
+
+// 获取是否是 demo 模式
+const bool QuickMCL::utils::QmlInterface::hasDemoFeature(const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    return game->getFeatures().contains("is_demo_user");
+}
+
+// 设置 demo 模式
+void QuickMCL::utils::QmlInterface::setDemo(const bool demo, const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    if (demo){
+        game->addFeature("is_demo_user");
+    } else {
+        game->deleteFeature("is_demo_user");
+    }
+    if (gameName == ""){
+        config::Config::getGlobalConfigPtr()->writeConfigToFile();
+    } else {
+        game::Game::writeGameConfig();
+    }
+}
+
+// 获取是否采用全局基础设置
+const bool QuickMCL::utils::QmlInterface::getUseGlobalBasic(const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){ // **按理说不应该有空的
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    return game->getUseGlobalBasic();
+}
+
+// 设置是否采用全局基础设置
+void QuickMCL::utils::QmlInterface::setUseGlobalBasic(const bool useGlobalBasic, const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    game->setUseGlobalBasic(useGlobalBasic);
+    if (gameName == ""){
+        config::Config::getGlobalConfigPtr()->writeConfigToFile();
+    } else {
+        game::Game::writeGameConfig();
+    }
+}
+
+// 获取是否采用全局高级设置
+const bool QuickMCL::utils::QmlInterface::getUseGlobalAdvance(const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    return game->getUseGlobalAdvance();
+}
+
+// 设置是否采用全局高级设置
+void QuickMCL::utils::QmlInterface::setUseGlobalAdvance(const bool useGlobalAdvance, const QString& gameName){
+    game::Game* game;
+    if (gameName == ""){
+        game = game::Game::getGlobalGameConfigPtr();
+    } else {
+        game = game::Game::getGameListPtr()->value(gameName);
+    }
+    game->setUseGlobalAdvance(useGlobalAdvance);
+    if (gameName == ""){
+        config::Config::getGlobalConfigPtr()->writeConfigToFile();
+    } else {
+        game::Game::writeGameConfig();
     }
 }
 

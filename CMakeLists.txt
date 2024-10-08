@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.27)
 
 project(QuickMCL VERSION 0.1.0.0 LANGUAGES CXX)
@@ -77,6 +78,7 @@ set(QML_SOURCES
     src/ui/NavBarButtonGroups/ButtonGroupSettings.qml
     src/ui/NavBarButtonGroups/ButtonGroupAbout.qml
     src/ui/ContentAreaPages/LaunchPages/PageLaunch.qml
+    src/ui/ContentAreaPages/LaunchPages/PageGameSettings.qml
     src/ui/ContentAreaPages/SettingsPages/PageGameSettings.qml
 )
 
