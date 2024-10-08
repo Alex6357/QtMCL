@@ -46,17 +46,14 @@ Rectangle {
     anchors.centerIn: parent
     // 默认不可见
     visible: false
-    // 连接功能栏信号
-    Component.onCompleted: {
-        funcBar.changed.connect(checkFunction)
-    }
+
     function checkFunction(number: int){
         if(number === FuncBar.FunctionTypes.Settings){
             visible = true
             // 避免背景方块不在默认选项时播放动画
             backgroundRectangleAnimation.duration = 0
             // 回到默认项
-            gameSettings()
+            buttonGroupSettings.settingsFunction = ButtonGroupSettings.SettingsFunctions.GameSettings
             backgroundRectangleAnimation.duration = 250
 
             inAnimation.start()
@@ -79,21 +76,6 @@ Rectangle {
     // 默认激活
     property bool activated: true
 
-    // 功能信号
-    signal gameSettings()
-    signal launcherSettings()
-    // 统一用 changed 信号通知按钮
-    signal changed(number: int)
-
-    onGameSettings: {
-        settingsFunction = ButtonGroupSettings.SettingsFunctions.GameSettings
-        changed(ButtonGroupSettings.SettingsFunctions.GameSettings)
-    }
-    onLauncherSettings: {
-        settingsFunction = ButtonGroupSettings.SettingsFunctions.LauncherSettings
-        changed(ButtonGroupSettings.SettingsFunctions.LauncherSettings)
-    }
-
     // 按钮默认值
     property int buttonWidth: 80
     property int buttonHeight: 30
@@ -102,7 +84,7 @@ Rectangle {
     // 进入动画组
     ParallelAnimation {
         id: inAnimation
-        onStarted: visible = true
+        onStarted: buttonGroupSettings.visible = true
 
         // 第一个，全局游戏设置按钮，总和背景矩形一起进入
         ParallelAnimation {
@@ -150,7 +132,7 @@ Rectangle {
             // 防止在退出动画未播放完时开始进入动画导致
             // 退出动画播放完后按钮被隐藏
             if(!inAnimation.running){
-                visible = false
+                buttonGroupSettings.visible = false
             }
         }
 
@@ -184,7 +166,7 @@ Rectangle {
                 to: 30
             }
             PropertyAnimation {
-                targets: gameSettingsButton
+                target: gameSettingsButton
                 property: "opacity"
                 from: 1
                 to: 0
@@ -223,14 +205,16 @@ Rectangle {
         color: "white"
         opacity: 0
         anchors.verticalCenter: parent.verticalCenter
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(movetoActivate)
-        // 移动到激活的按钮
-        function movetoActivate(number: int){
-            if(number === ButtonGroupSettings.SettingsFunctions.GameSettings){
-                x = gameSettingsButton.x
-            } else {
-                x = launcherSettingsButton.x
+
+        Connections {
+            target: buttonGroupSettings
+            // 移动到激活的按钮
+            function movetoActivate(number: int){
+                if(buttonGroupSettings.settingsFunction === ButtonGroupSettings.SettingsFunctions.GameSettings){
+                    backgroundRectangle.x = gameSettingsButton.x
+                } else {
+                    backgroundRectangle.x = launcherSettingsButton.x
+                }
             }
         }
 
@@ -258,17 +242,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: true
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupSettings.SettingsFunctions.GameSettings){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupSettings
+            // 检查是否为激活
+            function checkActivate(number: int){
+                if(buttonGroupSettings.settingsFunction === ButtonGroupSettings.SettingsFunctions.GameSettings){
+                    gameSettingsButton.buttonActivated = true
+                    gameSettingsButton.text.color = "#00b057"
+                    gameSettingsButton.color.a = 0
+                } else {
+                    gameSettingsButton.text.color = "white"
+                    gameSettingsButton.buttonActivated = false
+                }
             }
         }
 
@@ -279,7 +264,7 @@ Rectangle {
         mouseArea.onEntered: if(!gameSettingsButton.buttonActivated) gameSettingsButton.color.a = 0.17
         mouseArea.onExited: if(!gameSettingsButton.buttonActivated) gameSettingsButton.color.a = 0
         mouseArea.onPressed: if(!gameSettingsButton.buttonActivated) gameSettingsButton.color.a = 0.4
-        mouseArea.onClicked: if(!gameSettingsButton.buttonActivated) gameSettings()
+        mouseArea.onClicked: if(!gameSettingsButton.buttonActivated) buttonGroupSettings.settingsFunction = ButtonGroupSettings.SettingsFunctions.GameSettings
     }
 
     // 启动器设置按钮
@@ -297,17 +282,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: false
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupSettings.SettingsFunctions.LauncherSettings){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupSettings
+            // 检查是否为激活
+            function checkActivate(number: int){
+                if(buttonGroupSettings.settingsFunction === ButtonGroupSettings.SettingsFunctions.LauncherSettings){
+                    launcherSettingsButton.buttonActivated = true
+                    launcherSettingsButton.text.color = "#00b057"
+                    launcherSettingsButton.color.a = 0
+                } else {
+                    launcherSettingsButton.text.color = "white"
+                    launcherSettingsButton.buttonActivated = false
+                }
             }
         }
 
@@ -318,6 +304,6 @@ Rectangle {
         mouseArea.onEntered: if(!launcherSettingsButton.buttonActivated) launcherSettingsButton.color.a = 0.17
         mouseArea.onExited: if(!launcherSettingsButton.buttonActivated) launcherSettingsButton.color.a = 0
         mouseArea.onPressed: if(!launcherSettingsButton.buttonActivated) launcherSettingsButton.color.a = 0.4
-        mouseArea.onClicked: if(!launcherSettingsButton.buttonActivated) launcherSettings()
+        mouseArea.onClicked: if(!launcherSettingsButton.buttonActivated) buttonGroupSettings.settingsFunction = ButtonGroupSettings.SettingsFunctions.LauncherSettings
     }
 }// 启动游戏导航栏按钮组

@@ -43,13 +43,6 @@ Rectangle {
     color: "#e9faf0"
     id: contentArea
 
-    // 保存当前功能
-    property int funcBarFunction: FuncBar.FunctionTypes.Launch
-    property int buttonGroupFunction: 0
-
-    // 统一用 changed 信号通知
-    signal changed()
-
     // 用于动态加载页面
     Loader {
         id: contentAreaLoader
@@ -62,13 +55,14 @@ Rectangle {
         source: "ContentAreaPages/LaunchPages/PageLaunch.qml"
     }
 
-    onChanged: {
+    // 切换页面
+    function switchFunction(mainFunc: int, subFunc: int) {
         // 寻找主功能
-        switch(funcBarFunction){
+        switch(mainFunc){
             // 主功能为“启动游戏”
             case FuncBar.FunctionTypes.Launch:
                 // 寻找子功能
-                switch(buttonGroupFunction){
+                switch(subFunc){
                     // 子功能为“启动”
                     case ButtonGroupLaunch.LaunchFunctions.Launch:
                         contentAreaLoader.source = "ContentAreaPages/LaunchPages/PageLaunch.qml"
@@ -86,7 +80,7 @@ Rectangle {
             // 主功能为“全局设置”
             case FuncBar.FunctionTypes.Settings:
                 // 寻找子功能
-                switch(buttonGroupFunction){
+                switch(subFunc){
                     // 子功能为“游戏设置”
                     case ButtonGroupSettings.SettingsFunctions.GameSettings:
                         contentAreaLoader.source = "ContentAreaPages/SettingsPages/PageGameSettings.qml"
@@ -102,35 +96,5 @@ Rectangle {
                 contentAreaLoader.source = ""
                 break
         }
-    }
-
-    // 连接所有信号
-    Connections {
-        target: funcBar
-        function onChanged(number: int){
-            funcBarFunction = number
-        }
-    }
-    // 在收到按钮组的信号的时候再触发页面切换的信号
-    Connections {
-        target: navBar.buttonGroupLaunch
-        function onChanged(number: int){
-            buttonGroupFunction = number
-            changed()
-        }
-    }
-    Connections {
-        target: navBar.buttonGroupDownload
-        function onChanged(number: int){
-            buttonGroupFunction = number
-            changed()
-        }
-    }
-    Connections {
-        target: navBar.buttonGroupSettings
-        function onChanged(number: int){
-            buttonGroupFunction = number
-            changed()
-        }
-    }
+    }// 切换页面
 }

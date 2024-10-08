@@ -47,6 +47,12 @@ Rectangle {
     anchors.left: parent.left
     clip: true
 
+    // 导出关闭和最小化按钮
+    property alias closeButton: closeButton
+    property alias minimizeButton: minimizeButton
+    // 导出标题栏拖动区
+    property alias mouseArea: mouseArea
+
     // 导出按钮组，让内容区能接收到信号
     property alias buttonGroupLaunch: buttonGroupLaunch
     property alias buttonGroupDownload: buttonGroupDownload
@@ -57,19 +63,6 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        onPressed: {
-            // 开始拖动
-            rootWindow.startSystemMove()
-        }
-        onReleased: {
-            // 防止导航栏被拖到任务栏下或屏幕上方
-            if(rootWindow.y < 0){
-                rootWindow.y = 0
-            }
-            if(rootWindow.y > Screen.desktopAvailableHeight - navBar.height - 5){
-                rootWindow.y = Screen.desktopAvailableHeight - navBar.height - 5
-            }
-        }
     }
 
     // 关闭按钮
@@ -93,7 +86,7 @@ Rectangle {
         mouseArea.onEntered: closeButton.color.a = 0.17
         mouseArea.onExited: closeButton.color.a = 0
         mouseArea.onPressed: closeButton.color.a = 0.4
-        mouseArea.onClicked: rootWindow.close()
+        // mouseArea.onClicked: rootWindow.close()
     }
 
     // 最小化按钮
@@ -117,7 +110,7 @@ Rectangle {
         mouseArea.onEntered: minimizeButton.color.a = 0.17
         mouseArea.onExited: minimizeButton.color.a = 0
         mouseArea.onPressed: minimizeButton.color.a = 0.4
-        mouseArea.onClicked: rootWindow.showMinimized()
+        // mouseArea.onClicked: rootWindow.showMinimized()
     }
 
     // 导航栏按钮所在区

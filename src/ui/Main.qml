@@ -61,6 +61,77 @@ Window {
         }
     }
 
+    // 连接关闭按钮信号
+    Connections {
+        target: navBar.closeButton.mouseArea
+        function onClicked(){
+            rootWindow.close()
+        }
+    }
+
+    // 连接最小化按钮信号
+    Connections {
+        target: navBar.minimizeButton.mouseArea
+        function onClicked(){
+            rootWindow.showMinimized()
+        }
+    }
+
+    // 连接拖动区信号
+    Connections {
+        target: navBar.mouseArea
+        function onPressed(){
+            // 开始拖动
+            rootWindow.startSystemMove()
+        }
+        function onReleased(){
+            // 防止导航栏被拖到任务栏下或屏幕上方
+            if(rootWindow.y < 0){
+                rootWindow.y = 0
+            }
+            if(rootWindow.y > Screen.desktopAvailableHeight - navBar.height - 5){
+                rootWindow.y = Screen.desktopAvailableHeight - navBar.height - 5
+            }
+        }
+    }
+
+    // 功能栏信号连接到导航栏
+    Connections {
+        target: funcBar
+        function onFunctionTypeChanged(){
+            navBar.buttonGroupLaunch.checkFunction(funcBar.functionType)
+            navBar.buttonGroupDownload.checkFunction(funcBar.functionType)
+            navBar.buttonGroupSettings.checkFunction(funcBar.functionType)
+            // navBar.buttonGroupAbout.checkFunction(func)
+            mainContentArea.switchFunction(funcBar.functionType, 0)
+        }
+    }
+
+    Connections {
+        target: navBar.buttonGroupLaunch
+        function onLaunchFunctionChanged(){
+            mainContentArea.switchFunction(funcBar.functionType, navBar.buttonGroupLaunch.launchFunction)
+        }
+    }
+    Connections {
+        target: navBar.buttonGroupDownload
+        function onDownloadFunctionChanged(){
+            mainContentArea.switchFunction(funcBar.functionType, navBar.buttonGroupDownload.downloadFunction)
+        }
+    }
+    Connections {
+        target: navBar.buttonGroupSettings
+        function onSettingsFunctionChanged(){
+            mainContentArea.switchFunction(funcBar.functionType, navBar.buttonGroupSettings.settingsFunction)
+        }
+    }
+    // Connections {
+    //     target: navBar.buttonGroupAbout
+    //     function onAboutFunctionChanged(){
+    //         mainContentArea.switchFunction(funcBar.functionType, navBar.buttonGroupAbout.aboutFunction)
+    //     }
+    // }
+
     // 包装 Item，方便对齐
     Item {
         id: rootItem

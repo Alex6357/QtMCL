@@ -46,17 +46,13 @@ Rectangle {
     anchors.centerIn: parent
     // 默认不可见
     visible: false
-    // 连接功能栏信号
-    Component.onCompleted: {
-        funcBar.changed.connect(checkFunction)
-    }
     function checkFunction(number: int){
         if(number === FuncBar.FunctionTypes.Download){
             visible = true
             // 避免背景方块不在默认选项时播放动画
             backgroundRectangleAnimation.duration = 0
             // 回到默认项
-            minecraft()
+            downloadFunction = ButtonGroupDownload.downloadFunction = ButtonGroupDownload.DownloadFunctions.Minecraft
             backgroundRectangleAnimation.duration = 250
 
             inAnimation.start()
@@ -79,25 +75,6 @@ Rectangle {
     // 默认不激活
     property bool activated: false
 
-    // 功能信号
-    signal minecraft()
-    signal mods()
-    signal packs()
-    // 统一用 changed 信号通知按钮
-    signal changed(number: int)
-
-    onMinecraft: {
-        downloadFunction = ButtonGroupDownload.DownloadFunctions.Minecraft
-        changed(ButtonGroupDownload.DownloadFunctions.Minecraft)
-    }
-    onMods: {
-        downloadFunction = ButtonGroupDownload.DownloadFunctions.Mods
-        changed(ButtonGroupDownload.DownloadFunctions.Mods)
-    }
-    onPacks: {
-        downloadFunction = ButtonGroupDownload.DownloadFunctions.Packs
-        changed(ButtonGroupDownload.DownloadFunctions.Packs)
-    }
 
     // 按钮默认值
     property int buttonWidth: 80
@@ -107,7 +84,7 @@ Rectangle {
     // 进入动画组
     ParallelAnimation {
         id: inAnimation
-        onStarted: visible = true
+        onStarted: buttonGroupDownload.visible = true
 
         // 第一个，Minecraft 按钮，总和背景矩形一起进入
         ParallelAnimation {
@@ -176,7 +153,7 @@ Rectangle {
             // 防止在退出动画未播放完时开始进入动画导致
             // 退出动画播放完后按钮被隐藏
             if(!inAnimation.running){
-                visible = false
+                buttonGroupDownload.visible = false
             }
         }
 
@@ -270,16 +247,18 @@ Rectangle {
         color: "white"
         opacity: 0
         anchors.verticalCenter: parent.verticalCenter
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(movetoActivate)
-        // 移动到激活的按钮
-        function movetoActivate(number: int){
-            if(number === ButtonGroupDownload.DownloadFunctions.Minecraft){
-                x = minecraftButton.x
-            } else if(number === ButtonGroupDownload.DownloadFunctions.Mods){
-                x = modsButton.x
-            } else {
-                x = packsButton.x
+
+        Connections {
+            target: buttonGroupDownload
+            // 移动到激活的按钮
+            function onDownloadFunctionChanged(){
+                if(buttonGroupDownload.downloadFunction === ButtonGroupDownload.DownloadFunctions.Minecraft){
+                    backgroundRectangle.x = minecraftButton.x
+                } else if(buttonGroupDownload.downloadFunction === ButtonGroupDownload.DownloadFunctions.Mods){
+                    backgroundRectangle.x = modsButton.x
+                } else {
+                    backgroundRectangle.x = packsButton.x
+                }
             }
         }
 
@@ -308,17 +287,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: true
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupDownload.DownloadFunctions.Minecraft){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupDownload
+            // 检查是否为激活
+            function onDownloadFunctionChanged(){
+                if(buttonGroupDownload.downloadFunction === ButtonGroupDownload.DownloadFunctions.Minecraft){
+                    minecraftButton.buttonActivated = true
+                    minecraftButton.text.color = "#00b057"
+                    minecraftButton.color.a = 0
+                } else {
+                    minecraftButton.text.color = "white"
+                    minecraftButton.buttonActivated = false
+                }
             }
         }
 
@@ -329,7 +309,7 @@ Rectangle {
         mouseArea.onEntered: if(!minecraftButton.buttonActivated) minecraftButton.color.a = 0.17
         mouseArea.onExited: if(!minecraftButton.buttonActivated) minecraftButton.color.a = 0
         mouseArea.onPressed: if(!minecraftButton.buttonActivated) minecraftButton.color.a = 0.4
-        mouseArea.onClicked: if(!minecraftButton.buttonActivated) minecraft()
+        mouseArea.onClicked: if(!minecraftButton.buttonActivated) buttonGroupDownload.downloadFunction = ButtonGroupDownload.DownloadFunctions.Minecraft
     }
 
     // Mods 按钮
@@ -347,17 +327,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: false
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupDownload.DownloadFunctions.Mods){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupDownload
+            // 检查是否为激活
+            function onDownloadFunctionChanged(){
+                if(buttonGroupDownload.downloadFunction === ButtonGroupDownload.DownloadFunctions.Mods){
+                    modsButton.buttonActivated = true
+                    modsButton.text.color = "#00b057"
+                    modsButton.color.a = 0
+                } else {
+                    modsButton.text.color = "white"
+                    modsButton.buttonActivated = false
+                }
             }
         }
 
@@ -368,7 +349,7 @@ Rectangle {
         mouseArea.onEntered: if(!modsButton.buttonActivated) modsButton.color.a = 0.17
         mouseArea.onExited: if(!modsButton.buttonActivated) modsButton.color.a = 0
         mouseArea.onPressed: if(!modsButton.buttonActivated) modsButton.color.a = 0.4
-        mouseArea.onClicked: if(!modsButton.buttonActivated) mods()
+        mouseArea.onClicked: if(!modsButton.buttonActivated) buttonGroupDownload.downloadFunction === ButtonGroupDownload.DownloadFunctions.Mods
     }
 
     // 整合包按钮
@@ -387,17 +368,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: false
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupDownload.DownloadFunctions.Packs){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupDownload
+            // 检查是否为激活
+            function onDownloadFunctionChanged(number: int){
+                if(buttonGroupDownload.downloadFunction === ButtonGroupDownload.DownloadFunctions.Packs){
+                    packsButton.buttonActivated = true
+                    packsButton.text.color = "#00b057"
+                    packsButton.color.a = 0
+                } else {
+                    packsButton.text.color = "white"
+                    packsButton.buttonActivated = false
+                }
             }
         }
 
@@ -408,6 +390,6 @@ Rectangle {
         mouseArea.onEntered: if(!packsButton.buttonActivated) packsButton.color.a = 0.17
         mouseArea.onExited: if(!packsButton.buttonActivated) packsButton.color.a = 0
         mouseArea.onPressed: if(!packsButton.buttonActivated) packsButton.color.a = 0.4
-        mouseArea.onClicked: if(!packsButton.buttonActivated) packs()
+        mouseArea.onClicked: if(!packsButton.buttonActivated) buttonGroupDownload.downloadFunction = ButtonGroupDownload.DownloadFunctions.Packs
     }
 }// 游戏下载导航栏按钮组

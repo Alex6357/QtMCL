@@ -34,7 +34,6 @@
  */
 
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import "QuickMCLComponents"
 
@@ -55,32 +54,8 @@ Rectangle {
     // 能否点击，限制点击频率
     property bool clickable: true
 
-    // 功能信号
-    signal functionLaunch()
-    signal functionDownload()
-    signal functionSettings()
-    signal functionAbout()
-    // 统一用 changed 通知
-    signal changed(number: int)
-
-    onFunctionLaunch: {
-        functionType = FuncBar.FunctionTypes.Launch
-        changed(FuncBar.FunctionTypes.Launch)
-    }
-    onFunctionDownload: {
-        functionType = FuncBar.FunctionTypes.Download
-        changed(FuncBar.FunctionTypes.Download)
-    }
-    onFunctionSettings: {
-        functionType = FuncBar.FunctionTypes.Settings
-        changed(FuncBar.FunctionTypes.Settings)
-    }
-    onFunctionAbout: {
-        functionType = FuncBar.FunctionTypes.About
-        changed(FuncBar.FunctionTypes.About)
-    }
     // 开启不可点击定时器
-    onChanged: {
+    onFunctionTypeChanged: {
         clickable = false
         clickableTimer.start()
     }
@@ -89,7 +64,7 @@ Rectangle {
     Timer {
         id: clickableTimer
         interval: 250
-        onTriggered: clickable = true
+        onTriggered: parent.clickable = true
     }
 
     // 功能栏的内容区
@@ -115,23 +90,24 @@ Rectangle {
             // 启动游戏按钮
             QuickMCLButton {
                 id: buttonLaunch
-                width: parent.buttonWidth
-                height: parent.buttonHeight
+                implicitWidth: parent.buttonWidth
+                implicitHeight: parent.buttonHeight
                 color: "#00b057"
                 border.width: 0
 
                 property bool activated: true
 
-                // 连接 changed 信号
-                Component.onCompleted: funcBar.changed.connect(checkActivate)
-                // 检查是否激活
-                function checkActivate(number: int){
-                    if(number === FuncBar.FunctionTypes.Launch){
-                        activated = true
-                        color.a = 1
-                    } else {
-                        activated = false
-                        color.a = 0
+                Connections {
+                    target: funcBar
+                    // 检查是否激活
+                    function onFunctionTypeChanged(){
+                        if(funcBar.functionType === FuncBar.FunctionTypes.Launch){
+                            buttonLaunch.activated = true
+                            buttonLaunch.color.a = 1
+                        } else {
+                            buttonLaunch.activated = false
+                            buttonLaunch.color.a = 0
+                        }
                     }
                 }
 
@@ -142,29 +118,30 @@ Rectangle {
                 mouseArea.onEntered: if(!buttonLaunch.activated) buttonLaunch.color.a = 0.4
                 mouseArea.onExited: if(!buttonLaunch.activated) buttonLaunch.color.a = 0
                 mouseArea.onPressed: if(!buttonLaunch.activated) buttonLaunch.color.a = 0.6
-                mouseArea.onClicked: if(clickable && !buttonLaunch.activated) functionLaunch()
+                mouseArea.onClicked: if(funcBar.clickable && !buttonLaunch.activated) funcBar.functionType = FuncBar.FunctionTypes.Launch
             }
 
             // 游戏下载按钮
             QuickMCLButton {
                 id: buttonDownload
-                width: parent.buttonWidth
-                height: parent.buttonHeight
+                implicitWidth: parent.buttonWidth
+                implicitHeight: parent.buttonHeight
                 color: "#0000b057"
                 border.width: 0
 
                 property bool activated: false
 
-                // 连接 changed 信号
-                Component.onCompleted: funcBar.changed.connect(checkActivate)
-                // 检查是否激活
-                function checkActivate(number: int){
-                    if(number === FuncBar.FunctionTypes.Download){
-                        activated = true
-                        color.a = 1
-                    } else {
-                        activated = false
-                        color.a = 0
+                Connections {
+                    target: funcBar
+                    // 检查是否激活
+                    function onFunctionTypeChanged(){
+                        if(funcBar.functionType === FuncBar.FunctionTypes.Download){
+                            buttonDownload.activated = true
+                            buttonDownload.color.a = 1
+                        } else {
+                            buttonDownload.activated = false
+                            buttonDownload.color.a = 0
+                        }
                     }
                 }
 
@@ -175,29 +152,30 @@ Rectangle {
                 mouseArea.onEntered: if(!buttonDownload.activated) buttonDownload.color.a = 0.4
                 mouseArea.onExited: if(!buttonDownload.activated) buttonDownload.color.a = 0
                 mouseArea.onPressed: if(!buttonDownload.activated) buttonDownload.color.a = 0.6
-                mouseArea.onClicked: if(clickable && !buttonDownload.activated) functionDownload()
+                mouseArea.onClicked: if(funcBar.clickable && !buttonDownload.activated) funcBar.functionType = FuncBar.FunctionTypes.Download
             }
 
             // 全局设置按钮
             QuickMCLButton {
                 id: buttonSettings
-                width: parent.buttonWidth
-                height: parent.buttonHeight
+                implicitWidth: parent.buttonWidth
+                implicitHeight: parent.buttonHeight
                 color: "#0000b057"
                 border.width: 0
 
                 property bool activated: false
 
-                // 连接 changed 信号
-                Component.onCompleted: funcBar.changed.connect(checkActivate)
-                // 检查是否激活
-                function checkActivate(number: int){
-                    if(number === FuncBar.FunctionTypes.Settings){
-                        activated = true
-                        color.a = 1
-                    } else {
-                        activated = false
-                        color.a = 0
+                Connections {
+                    target: funcBar
+                    // 检查是否激活
+                    function onFunctionTypeChanged(){
+                        if(funcBar.functionType === FuncBar.FunctionTypes.Settings){
+                            buttonSettings.activated = true
+                            buttonSettings.color.a = 1
+                        } else {
+                            buttonSettings.activated = false
+                            buttonSettings.color.a = 0
+                        }
                     }
                 }
 
@@ -208,30 +186,31 @@ Rectangle {
                 mouseArea.onEntered: if(!buttonSettings.activated) buttonSettings.color.a = 0.4
                 mouseArea.onExited: if(!buttonSettings.activated) buttonSettings.color.a = 0
                 mouseArea.onPressed: if(!buttonSettings.activated) buttonSettings.color.a = 0.6
-                mouseArea.onClicked: if(clickable && !buttonSettings.activated) functionSettings()
+                mouseArea.onClicked: if(funcBar.clickable && !buttonSettings.activated) funcBar.functionType = FuncBar.FunctionTypes.Settings
             }
 
 
             // 更多信息按钮
             QuickMCLButton {
                 id: buttonAbout
-                width: parent.buttonWidth
-                height: parent.buttonHeight
+                implicitWidth: parent.buttonWidth
+                implicitHeight: parent.buttonHeight
                 color: "#0000b057"
                 border.width: 0
 
                 property bool activated: false
 
-                // 连接 changed 信号
-                Component.onCompleted: funcBar.changed.connect(checkActivate)
-                // 检查是否激活
-                function checkActivate(number: int){
-                    if(number === FuncBar.FunctionTypes.About){
-                        activated = true
-                        color.a = 1
-                    } else {
-                        activated = false
-                        color.a = 0
+                Connections {
+                    target: funcBar
+                    // 检查是否激活
+                    function onFunctionTypeChanged(){
+                        if(funcBar.functionType === FuncBar.FunctionTypes.About){
+                            buttonAbout.activated = true
+                            buttonAbout.color.a = 1
+                        } else {
+                            buttonAbout.activated = false
+                            buttonAbout.color.a = 0
+                        }
                     }
                 }
 
@@ -242,7 +221,7 @@ Rectangle {
                 mouseArea.onEntered: if(!buttonAbout.activated) buttonAbout.color.a = 0.4
                 mouseArea.onExited: if(!buttonAbout.activated) buttonAbout.color.a = 0
                 mouseArea.onPressed: if(!buttonAbout.activated) buttonAbout.color.a = 0.6
-                mouseArea.onClicked: if(clickable && !buttonAbout.activated) functionAbout()
+                mouseArea.onClicked: if(funcBar.clickable && !buttonAbout.activated) funcBar.functionType = FuncBar.FunctionTypes.About
             }
         }// 功能栏按钮垂直分布
     }// 功能栏的内容区

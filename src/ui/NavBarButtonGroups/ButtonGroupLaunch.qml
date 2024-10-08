@@ -44,16 +44,12 @@ Rectangle {
     height: parent.height
     color: "transparent"
     anchors.centerIn: parent
-    // 连接功能栏信号
-    Component.onCompleted: {
-        funcBar.changed.connect(checkFunction)
-    }
     function checkFunction(number: int){
         if(number === FuncBar.FunctionTypes.Launch){
             // 避免背景方块不在默认选项时播放动画
             backgroundRectangleAnimation.duration = 0
             // 回到默认项
-            launch()
+            launchFunction = ButtonGroupLaunch.LaunchFunctions.Launch
             backgroundRectangleAnimation.duration = 250
 
             inAnimation.start()
@@ -78,31 +74,6 @@ Rectangle {
     // 默认激活
     property bool activated: true
 
-    // 功能信号
-    signal launch()
-    signal settings()
-    signal mods()
-    signal install()
-    // 统一用 changed 信号通知按钮
-    signal changed(number: int)
-
-    onLaunch: {
-        launchFunction = ButtonGroupLaunch.LaunchFunctions.Launch
-        changed(ButtonGroupLaunch.LaunchFunctions.Launch)
-    }
-    onSettings: {
-        launchFunction = ButtonGroupLaunch.LaunchFunctions.Settings
-        changed(ButtonGroupLaunch.LaunchFunctions.Settings)
-    }
-    onMods: {
-        launchFunction = ButtonGroupLaunch.LaunchFunctions.Mods
-        changed(ButtonGroupLaunch.LaunchFunctions.Mods)
-    }
-    onInstall: {
-        launchFunction = ButtonGroupLaunch.LaunchFunctions.Install
-        changed(ButtonGroupLaunch.LaunchFunctions.Install)
-    }
-
     // 按钮默认值
     property int buttonWidth: 80
     property int buttonHeight: 30
@@ -111,7 +82,7 @@ Rectangle {
     // 进入动画组
     ParallelAnimation {
         id: inAnimation
-        onStarted: visible = true
+        onStarted: buttonGroupLaunch.visible = true
 
         // 第一个，启动按钮，总和背景矩形一起进入
         ParallelAnimation {
@@ -201,7 +172,7 @@ Rectangle {
             // 防止在退出动画未播放完时开始进入动画导致
             // 退出动画播放完后按钮被隐藏
             if(!inAnimation.running){
-                visible = false
+                buttonGroupLaunch.visible = false
             }
         }
 
@@ -235,7 +206,7 @@ Rectangle {
                 to: 30
             }
             PropertyAnimation {
-                targets: launchButton
+                target: launchButton
                 property: "opacity"
                 from: 1
                 to: 0
@@ -315,18 +286,20 @@ Rectangle {
         radius: 5
         color: "white"
         anchors.verticalCenter: parent.verticalCenter
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(movetoActivate)
-        // 移动到激活的按钮
-        function movetoActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Launch){
-                x = launchButton.x
-            } else if(number === ButtonGroupLaunch.LaunchFunctions.Settings){
-                x = settingsButton.x
-            } else if(number === ButtonGroupLaunch.LaunchFunctions.Mods){
-                x = modsButton.x
-            } else {
-                x = installButton.x
+
+        Connections {
+            target: buttonGroupLaunch
+            // 移动到激活的按钮
+            function onLaunchFunctionChanged(){
+                if(buttonGroupLaunch.launchFunction === ButtonGroupLaunch.LaunchFunctions.Launch){
+                    backgroundRectangle.x = launchButton.x
+                } else if(buttonGroupLaunch.launchFunction === ButtonGroupLaunch.LaunchFunctions.Settings){
+                    backgroundRectangle.x = settingsButton.x
+                } else if(buttonGroupLaunch.launchFunction === ButtonGroupLaunch.LaunchFunctions.Mods){
+                    backgroundRectangle.x = modsButton.x
+                } else {
+                    backgroundRectangle.x = installButton.x
+                }
             }
         }
 
@@ -353,17 +326,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: true
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Launch){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupLaunch
+            // 检查是否为激活
+            function onLaunchFunctionChanged(){
+                if(buttonGroupLaunch.launchFunction === ButtonGroupLaunch.LaunchFunctions.Launch){
+                    launchButton.buttonActivated = true
+                    launchButton.text.color = "#00b057"
+                    launchButton.color.a = 0
+                } else {
+                    launchButton.text.color = "white"
+                    launchButton.buttonActivated = false
+                }
             }
         }
 
@@ -374,7 +348,7 @@ Rectangle {
         mouseArea.onEntered: if(!launchButton.buttonActivated) launchButton.color.a = 0.17
         mouseArea.onExited: if(!launchButton.buttonActivated) launchButton.color.a = 0
         mouseArea.onPressed: if(!launchButton.buttonActivated) launchButton.color.a = 0.4
-        mouseArea.onClicked: if(!launchButton.buttonActivated) launch()
+        mouseArea.onClicked: if(!launchButton.buttonActivated) parent.launchFunction = ButtonGroupLaunch.LaunchFunctions.Launch
     }
 
     // 游戏设置按钮
@@ -391,17 +365,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: false
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Settings){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupLaunch
+            // 检查是否为激活
+            function onLaunchFunctionChanged(){
+                if(buttonGroupLaunch.launchFunction === ButtonGroupLaunch.LaunchFunctions.Settings){
+                    settingsButton.buttonActivated = true
+                    settingsButton.text.color = "#00b057"
+                    settingsButton.color.a = 0
+                } else {
+                    settingsButton.text.color = "white"
+                    settingsButton.buttonActivated = false
+                }
             }
         }
 
@@ -412,7 +387,7 @@ Rectangle {
         mouseArea.onEntered: if(!settingsButton.buttonActivated) settingsButton.color.a = 0.17
         mouseArea.onExited: if(!settingsButton.buttonActivated) settingsButton.color.a = 0
         mouseArea.onPressed: if(!settingsButton.buttonActivated) settingsButton.color.a = 0.4
-        mouseArea.onClicked: if(!settingsButton.buttonActivated) settings()
+        mouseArea.onClicked: if(!settingsButton.buttonActivated) parent.launchFunction = ButtonGroupLaunch.LaunchFunctions.Settings
     }
 
     // MOD 管理按钮
@@ -429,17 +404,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: false
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Mods){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupLaunch
+            // 检查是否为激活
+            function onLaunchFunctionChanged(){
+                if(buttonGroupLaunch.launchFunction === ButtonGroupLaunch.LaunchFunctions.Mods){
+                    modsButton.buttonActivated = true
+                    modsButton.text.color = "#00b057"
+                    modsButton.color.a = 0
+                } else {
+                    modsButton.text.color = "white"
+                    modsButton.buttonActivated = false
+                }
             }
         }
 
@@ -450,7 +426,7 @@ Rectangle {
         mouseArea.onEntered: if(!modsButton.buttonActivated) modsButton.color.a = 0.17
         mouseArea.onExited: if(!modsButton.buttonActivated) modsButton.color.a = 0
         mouseArea.onPressed: if(!modsButton.buttonActivated) modsButton.color.a = 0.4
-        mouseArea.onClicked: if(!modsButton.buttonActivated) mods()
+        mouseArea.onClicked: if(!modsButton.buttonActivated) parent.launchFunction = ButtonGroupLaunch.LaunchFunctions.Mods
     }
 
     // 自动安装按钮
@@ -467,17 +443,18 @@ Rectangle {
         // 默认激活
         property bool buttonActivated: false
 
-        // 连接 changed 信号
-        Component.onCompleted: parent.changed.connect(checkActivate)
-        // 检查是否为激活
-        function checkActivate(number: int){
-            if(number === ButtonGroupLaunch.LaunchFunctions.Install){
-                buttonActivated = true
-                text.color = "#00b057"
-                color.a = 0
-            } else {
-                text.color = "white"
-                buttonActivated = false
+        Connections {
+            target: buttonGroupLaunch
+            // 检查是否为激活
+            function onLaunchFunctionChanged(){
+                if(buttonGroupLaunch.launchFunction === ButtonGroupLaunch.LaunchFunctions.Install){
+                    installButton.buttonActivated = true
+                    installButton.text.color = "#00b057"
+                    installButton.color.a = 0
+                } else {
+                    installButton.text.color = "white"
+                    installButton.buttonActivated = false
+                }
             }
         }
 
@@ -488,6 +465,6 @@ Rectangle {
         mouseArea.onEntered: if(!installButton.buttonActivated) installButton.color.a = 0.17
         mouseArea.onExited: if(!installButton.buttonActivated) installButton.color.a = 0
         mouseArea.onPressed: if(!installButton.buttonActivated) installButton.color.a = 0.4
-        mouseArea.onClicked: if(!installButton.buttonActivated) install()
+        mouseArea.onClicked: if(!installButton.buttonActivated) parent.launchFunction = ButtonGroupLaunch.LaunchFunctions.Install
     }
 }// 启动游戏导航栏按钮组
