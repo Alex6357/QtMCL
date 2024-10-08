@@ -30,37 +30,13 @@
  */
 
 /*
- * 工具集合
+ * Windows 下检查是否是网络驱动器
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#include <windows.h>
+#include "../../utils/utils.h"
 
-#include <QString>
-#include "../config.h"
-
-namespace QuickMCL::utils {
-// 用双引号包裹字符串
-const QString warpInQuotationMarks(const QString& string);
-
-// 获取系统类型
-const enum QuickMCL::config::system getSystemType();
-// 获取系统架构
-const enum QuickMCL::config::arch getArch();
-// 获取系统名称
-const QString getSystemName();
-// 获取系统版本号
-const QString getSystemVersion();
-
-// 建立文件
-const bool makeFile(const QString& file);
-
-// 获取总物理内存大小
-const unsigned int getTotalMemoryMiB();
-
-#ifdef WINDOWS
-const bool checkIsNetworkStorage(const QString& drive);
-#endif
+const bool QuickMCL::utils::checkIsNetworkStorage(const QString& drive){
+    UINT driveType = GetDriveType(reinterpret_cast<const wchar_t *>(drive.utf16()));
+    return driveType == DRIVE_REMOTE;
 }
-
-#endif // UTILS_H

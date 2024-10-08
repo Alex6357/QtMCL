@@ -78,29 +78,38 @@ const bool QuickMCL::utils::Java::isJdk() const {
 // 扫描 java
 void QuickMCL::utils::Java::scanJava(){
     scanning = true;
-    if (QuickMCL::config::Config::getGlobalConfigPtr()->getSystem() == QuickMCL::config::system::windows){
-        for (const QFileInfo& drive : QDir::drives()){
-            for (const QString& programFiles : {"Program Files/", "Program Files (x86)/"}){
-                for (const QString& javaDir : *javaDirs){
-                    const QFileInfoList javaList = QDir(drive.absoluteFilePath() + programFiles + javaDir).entryInfoList(QStringList({"*jdk*", "*jre*", "*zulu*"}), QDir::Filter::NoDotAndDotDot | QDir::Filter::Dirs);
-                    if (!javaList.isEmpty()){
-                        for (const QFileInfo& dir : javaList){
-                            registerJavaByPath(dir.absoluteFilePath() + '/' + "bin/java.exe");
-                        }
+    qDebug() << "[QuickMCL::utils::Java::scanJava] 开始扫描 Java";
+    #ifdef WINDOWS
+    for (const QFileInfo& drive : QDir::drives()){
+        if (checkIsNetworkStorage(QDir::toNativeSeparators(drive.absoluteFilePath()))){
+            continue;
+        }
+        for (const QString& programFiles : {"Program Files/", "Program Files (x86)/"}){
+            for (const QString& javaDir : *javaDirs){
+                qDebug() << "[QuickMCL::utils::Java::scanJava] 开始扫描 " << drive.absoluteFilePath() + programFiles + javaDir;
+                const QFileInfoList javaList = QDir(drive.absoluteFilePath() + programFiles + javaDir).entryInfoList(QStringList({"*jdk*", "*jre*", "*zulu*"}), QDir::Filter::NoDotAndDotDot | QDir::Filter::Dirs);
+                qDebug() << "[QuickMCL::utils::Java::scanJava] 获取到的可能的 Java 路径: " << javaList;
+                if (!javaList.isEmpty()){
+                    for (const QFileInfo& dir : javaList){
+                        registerJavaByPath(dir.absoluteFilePath() + '/' + "bin/java.exe");
                     }
                 }
             }
         }
-        QString localProgramDir = QDir::homePath() + '/' + "AppData/Local/Programs/";
-        for (const QString& javaDir : *javaDirs){
-            const QFileInfoList javaList = QDir(localProgramDir + javaDir).entryInfoList(QStringList({"*jdk*", "*jre*", "*zulu*"}), QDir::Filter::NoDotAndDotDot | QDir::Filter::Dirs);
-            if (!javaList.isEmpty()){
-                for (const QFileInfo& dir : javaList){
-                    registerJavaByPath(dir.absoluteFilePath() + '/' + "bin/java.exe");
-                }
+    }
+    QString localProgramDir = QDir::homePath() + '/' + "AppData/Local/Programs/";
+    for (const QString& javaDir : *javaDirs){
+        qDebug() << "[QuickMCL::utils::Java::scanJava] 开始扫描 " << localProgramDir + javaDir;
+        const QFileInfoList javaList = QDir(localProgramDir + javaDir).entryInfoList(QStringList({"*jdk*", "*jre*", "*zulu*"}), QDir::Filter::NoDotAndDotDot | QDir::Filter::Dirs);
+        qDebug() << "[QuickMCL::utils::Java::scanJava] 获取到的可能的 Java 路径: " << javaList;
+        if (!javaList.isEmpty()){
+            for (const QFileInfo& dir : javaList){
+                registerJavaByPath(dir.absoluteFilePath() + '/' + "bin/java.exe");
             }
         }
     }
+    #endif
+    qDebug() << "[QuickMCL::utils::Java::scanJava] Java 扫描完成";
     scanning = false;
 }
 

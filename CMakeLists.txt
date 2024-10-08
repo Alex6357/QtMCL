@@ -11,10 +11,12 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt6 6.7 REQUIRED COMPONENTS Core Quick Concurrent)
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    add_definitions("-DWINDOWS")
     configure_file(src/natives/Windows/info.rc.in outfiles/info.rc)
     set(WINDOWS_SOURCES
         ${CMAKE_BINARY_DIR}/outfiles/info.rc
         src/natives/Windows/memory_info.cpp
+        src/natives/Windows/check_network_storage.cpp
     )
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     set(LINUX_SOURCES
